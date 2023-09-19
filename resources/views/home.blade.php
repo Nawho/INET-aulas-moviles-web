@@ -19,10 +19,10 @@
         <header class="app-header">
             INET - Información de aulas móviles
             <nav>
-
+                
             </nav>
         </header>
 
-        @include('bots.chat')
+        @include('widgets.chatbot-widget')
     </body>
 </html>
