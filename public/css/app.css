@@ -19,3 +19,7 @@ header {
     color: var(--blue-inet);
 
 }
+
+#botmanWidgetRoot div div {
+    color: white !important;
+}

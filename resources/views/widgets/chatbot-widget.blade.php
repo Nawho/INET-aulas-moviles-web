@@ -3,12 +3,18 @@
     This is the default widget, to modify basic aspect and functions go here -> https://botman.io/2.0/web-widget
     --}}
 
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/assets/css/chat.min.css">
+<link rel="stylesheet" type="text/css"
+    href="https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/assets/css/chat.min.css">
 <script>
     var botmanWidget = {
+        title: 'Botinet',
         chatServer: '/api/botman',
-        aboutText: 'Write Something',
-        introMessage: "hey! ✋ Im Botman, to start a conversation write 'hi', to render the fullscreen widget is on a button on the menu.",
+        placeholderText: 'Chatea con Botinet',
+        aboutText: 'Habla con Botinet',
+        introMessage: "¡Hola! ✋ Soy Botinet, estoy aquí para asistirte con cualquier duda que puedas tener sobre las aulas virtuales.",
+        bubbleAvatarUrl: 'imgs/bot_icon.webp',
+        bubbleBackground: '#AAAAAA',
+        mainColor: '#0E68AF'
     };
 </script>
 
