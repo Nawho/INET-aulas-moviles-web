@@ -5,10 +5,8 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
-                'resources/css/app.css',
-                'resources/css/chat.css',
-                'resources/js/app.js',
-                'resources/js/botman/fullscreen.js',
+                'css/app.css',
+                'js/app.js',
             ],
             refresh: true,
         }),

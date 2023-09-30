@@ -24,4 +24,4 @@
     }
 
 </script>
-@vite(['resources/js/botman/fullscreen.js', 'resources/css/chat.css'])
+@vite(['resources/js/botman/fullscreen.js'])
