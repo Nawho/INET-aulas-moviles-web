@@ -1,9 +1,0 @@
-Color Azul INET: RGB: #0E68AF
-Este color debe ser utilizado para títulos, fondos de cuadros destacados y puede utilizarse
-para iconos o fondo de iconos
-
-Color Blanco: RGB: #FFFFFF
-Este es el color de fondo predominante en las pantallas que contengan información
-
-Color Negro: RGB: #000000
-Es el color de los textos de cuerpos de información

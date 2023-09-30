@@ -11,10 +11,15 @@ header {
     background-color: var(--white);
     height: 60px;
     width: 100vw;
+    display: flex;
 }
 
 .app-header {
     background-color: var(--white);
     color: var(--blue-inet);
 
+}
+
+#botmanWidgetRoot div div {
+    color: white !important;
 }
