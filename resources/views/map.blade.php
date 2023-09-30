@@ -8,8 +8,8 @@
     <title>INET - Aulas móviles</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    <link href="{{ asset( 'css/app.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset( 'css/map.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('css/map.css') }}" rel="stylesheet" type="text/css">
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
@@ -42,21 +42,97 @@
                 </svg></button>
         </div>
     </div>
+
+    <div class="filtersWindow">
+        <span>Filtros</span>
+        <div>
+            <label for="especialidad-formativa-selector">Especialidad formativa</label>
+            <select id="especialidad-formativa-selector">
+                <option value="" selected disabled>SELECCIONAR</option>
+                <option value="AUTOMATIZACION INDUSTRIAL">Automatización industrial</option>
+                <option value="BIOTECNOLOGIA VEGETAL">Biotecnología vegetal</option>
+                <option value="ENERGÍAS RENOVABLES Y ALTERNATIVAS">Energías renovables y alternativas</option>
+                <option value="GENERICA">Genérica</option>
+                <option value="INFORMATICA, REDES Y REPARACION DE PC">Informática, redes y reparación de PC</option>
+                <option value="INSTALACIONES DOMICILIARIAS">Instalaciones domiciliarias</option>
+                <option value="METALMECANICA">Metlamecánica</option>
+                <option value="REFRIGERACION Y CLIMATIZACION">Refrigeración y climatización</option>
+                <option value="REPARACION DE AUTOS Y MOTOS">Reparación de autos y motos</option>
+                <option value="SABERES DIGITALES">Saberes digitales</option>
+                <option value="SISTEMAS TECNOLOGICOS">Sistemas tecnológicos</option>
+                <option value="TEXTIL E INDUMENTARIA">Textil e indumentaria</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="provincia-selector">Provincia</label>
+            <select id="provincia-selector">
+                <option value="" selected disabled>SELECCIONAR</option>
+                <option value="BUENOS AIRES">Buenos Aires</option>
+                <option value="CATAMARCA">Catamarca</option>
+                <option value="CHACO">Chaco</option>
+                <option value="CHUBUT">Chubut</option>
+                <option value="CÓRDOBA">Córdoba</option>
+                <option value="CORRIENTES">Corrientes</option>
+                <option value="ENTRE RÍOS">Entre Ríos</option>
+                <option value="FORMOSA">Formosa</option>
+                <option value="JUJUY">Jujuy</option>
+                <option value="LA PAMPA">La Pampa</option>
+                <option value="LA RIOJA">La Rioja</option>
+                <option value="MENDOZA">Mendoza</option>
+                <option value="MISIONES">Misiones</option>
+                <option value="NEUQUÉN">Neuquén</option>
+                <option value="RÍO NEGRO">Río Negro</option>
+                <option value="SALTA">Salta</option>
+                <option value="SAN JUAN">San Juan</option>
+                <option value="SAN LUIS">San Luis</option>
+                <option value="SANTA CRUZ">Santa Cruz</option>
+                <option value="SANTA FE">Santa Fe</option>
+                <option value="SANTIAGO DEL ESTERO">Santiago del Estero</option>
+                <option value="TIERRA DEL FUEGO">Tierra del Fuego</option>
+                <option value="TUCUMÁN">Tucumán</option>     
+            </select>
+        </div>
+    </div>
+
     <div class="mapContainer">
         <div id="map"></div>
     </div>
     @include('components.footer')
+    @include('widgets.chatbot-widget')
+
 </body>
 
 </html>
 <script>
-    var map = L.map('map').setView([-39.20, -65.43], 4);
+    const map = L.map('map').setView([-39.20, -65.43], 4);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 100,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(map);  
+    }).addTo(map);
 
     var marker = L.marker([51.5, -0.09]).addTo(map);
 
     marker.bindPopup("<b>Aula 13!</b><br>Estado: Abierta <br> Materias: Detonación de explosivos químicos").openPopup();
+
+    function getUserLocation() {
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const long = position.coords.longitude;
+
+                    console.log(`Latitude: ${lat}, longitude: ${long}`);
+                    map.setView([lat, long], 13)
+                },
+                (error) => {
+                    console.error("Error getting user location:", error);
+                }
+            )
+        } else {
+            console.error("Geolocation is not supported by this browser.");
+        }
+    }
+
+    getUserLocation()
 </script>

@@ -6,12 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('css/header.css') }}" rel="stylesheet" type="text/css">
 <body>
     <header>
         <div class="logoContainer">
-            <img id="imageLogo" src="imgs/LogoBlue.png" alt="Logo">
+            <img id="imageLogo" src="imgs/LogoWhite.png" alt="Logo">
             <span class="title">Aulas móviles</span>
         </div>
 

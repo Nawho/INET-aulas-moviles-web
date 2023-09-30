@@ -10,10 +10,11 @@ class AulaMovil extends Model
     use HasFactory;
 
     protected $table = 'aulas_moviles';
-    protected $primaryKey = 'n_CUE';
+    protected $primaryKey = 'id';
 
     // Define the fillable columns
     protected $fillable = [
+        'id',
         'jurisdiccion',
         'n_ATM',
         'n_CUE',
