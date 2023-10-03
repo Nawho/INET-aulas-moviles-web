@@ -1,14 +1,3 @@
-#map {
-    height: 500px;
-    width: 600px;
-
-    border: 3px solid var(--blue-inet);
-    border-radius: 10px;
-}
-
-
-
-
 .mapContainer {
     display: flex;
     justify-content: center;
@@ -49,10 +38,11 @@
     background-color: transparent;
 }
 
+/* FILTERS */
 .filterButton {
     background-color: #0E68AF;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
 }
 
 .filterButton svg {
@@ -66,14 +56,77 @@
     border-top: 3px solid var(--blue-inet);
     border-bottom: 3px solid var(--blue-inet);
     border-right: 3px solid var(--blue-inet);
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
 }
 
 .searchBarButton svg {
     width: 35px !important;
     height: 25px !important;
 }
+
+.filtersSectionContainer {
+    width: 600px;
+    margin-top: 20px;
+    border: 3px solid var(--blue-inet);
+    border-radius: 8px;
+}
+
+.filtersContainer {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    padding: 8px;
+    gap: 8px;
+    background-color: #0E68AF;
+}
+
+.filtersTitle {
+    width: 100%;
+    font-size: large;
+    align-self: flex-start;
+    text-align: center;
+    color: black;
+}
+
+.filter {
+    color: white;
+    background-color: #0E68AF;
+    border: 3px solid var(--blue-inet);
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.filter label {
+    pointer-events: none;
+    font-size: small;
+    font-weight: bold;
+    margin-left: 2px;
+}
+
+
+.filter select {
+    width: 100%;
+    border-radius: 8px;
+    color: black;
+    padding: 8px;
+    background-color: white;
+    cursor: pointer;
+
+    color: black;
+}
+
+
+#map {
+    height: 500px;
+    width: 600px;
+
+    border: 3px solid var(--blue-inet);
+    border-radius: 8px;
+}
+
 
 
 @media screen and (max-width: 700px) {
@@ -82,7 +135,12 @@
         width: 90vw;
     }
 
-    #searchBarContainer {
-        width: 90vw;
+    .filtersSectionContainer {
+        width: 90vw
+    }
+
+    .filtersContainer {
+        flex-direction: column;
+        align-items: center;
     }
 }

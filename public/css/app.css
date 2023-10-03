@@ -387,6 +387,7 @@ video {
     --blue-inet: #0E68AF;
     --white: #FFFFFF;
     --gray: hsl(0, 0%, 100%);
+    --filter-bg: hsl(0, 0%, 58%);
     --header-footer: #1a202c;
     --black: #000000;
 }
@@ -395,4 +396,23 @@ video {
 body {
     background-color: white;
     overflow-x: hidden;
+}
+
+.centerHorizontally {
+    display: flex;
+    justify-content: center;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.full-h {
+    height: 75vh;
+}
+
+#botmanWidgetRoot div div div {
+    color: white !important;
 }

@@ -25,7 +25,7 @@
 
 <body class="antialiased">
     @include('components.header')
-    <div id="searchBarContainerHolder">
+    <!--div id="searchBarContainerHolder">
         <div action="/" id="searchBarContainer">
             <button class="searchBarButton filterButton" style="float: left"><svg xmlns="http://www.w3.org/2000/svg"
                     height="36px" viewBox="0 0 24 24" width="36px" fill="#0E68AF">
@@ -41,59 +41,99 @@
                         d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
                 </svg></button>
         </div>
+    </div-->
+    
+    <div class="centerHorizontally">
+        <div class="filtersSectionContainer">
+            <!--div class="filtersTitle"><b>Filtros</b></div-->
+
+            <!--div class="centerHorizontally" style="height: 3px; width: 100%;">
+                <hr style="height: 3px; width: 100%; background-color: var(--blue-inet);">
+            </div-->
+
+            <div class="filtersContainer">
+                <div class="filter">
+                    <label for="especialidad-formativa-selector"><b>Especialidad formativa</b></label>
+                    <select id="especialidad-formativa-selector">
+                        <option value="ALL" selected>Todas</option>
+                        <option value="AUTOMATIZACION INDUSTRIAL">Automatización industrial</option>
+                        <option value="BIOTECNOLOGIA VEGETAL">Biotecnología vegetal</option>
+                        <option value="ENERGÍAS RENOVABLES Y ALTERNATIVAS">Energías renovables y alternativas</option>
+                        <option value="GENERICA">Genérica</option>
+                        <option value="INFORMATICA, REDES Y REPARACION DE PC">Informática, redes y reparación de PC</option>
+                        <option value="INSTALACIONES DOMICILIARIAS">Instalaciones domiciliarias</option>
+                        <option value="METALMECANICA">Metlamecánica</option>
+                        <option value="REFRIGERACION Y CLIMATIZACION">Refrigeración y climatización</option>
+                        <option value="REPARACION DE AUTOS Y MOTOS">Reparación de autos y motos</option>
+                        <option value="SABERES DIGITALES">Saberes digitales</option>
+                        <option value="SISTEMAS TECNOLOGICOS">Sistemas tecnológicos</option>
+                        <option value="TEXTIL E INDUMENTARIA">Textil e indumentaria</option>
+                    </select>
+                </div>
+
+                <div class="filter">
+                    <label for="provincia-selector"><b>Provincia</b></label>
+                    <select id="provincia-selector">
+                        <option value="ALL" selected>Todas</option>
+                        <option value="BUENOS AIRES">Buenos Aires</option>
+                        <option value="CATAMARCA">Catamarca</option>
+                        <option value="CHACO">Chaco</option>
+                        <option value="CHUBUT">Chubut</option>
+                        <option value="CÓRDOBA">Córdoba</option>
+                        <option value="CORRIENTES">Corrientes</option>
+                        <option value="ENTRE RÍOS">Entre Ríos</option>
+                        <option value="FORMOSA">Formosa</option>
+                        <option value="JUJUY">Jujuy</option>
+                        <option value="LA PAMPA">La Pampa</option>
+                        <option value="LA RIOJA">La Rioja</option>
+                        <option value="MENDOZA">Mendoza</option>
+                        <option value="MISIONES">Misiones</option>
+                        <option value="NEUQUÉN">Neuquén</option>
+                        <option value="RÍO NEGRO">Río Negro</option>
+                        <option value="SALTA">Salta</option>
+                        <option value="SAN JUAN">San Juan</option>
+                        <option value="SAN LUIS">San Luis</option>
+                        <option value="SANTA CRUZ">Santa Cruz</option>
+                        <option value="SANTA FE">Santa Fe</option>
+                        <option value="SANTIAGO DEL ESTERO">Santiago del Estero</option>
+                        <option value="TIERRA DEL FUEGO">Tierra del Fuego</option>
+                        <option value="TUCUMÁN">Tucumán</option>     
+                    </select>
+                </div>
+
+                <div class="filter">
+                    <label for="localidad-selector"><b>Localidad</b></label>
+                    <select id="localidad-selector">
+                        <option value="ALL" selected>Todas</option>
+                        <option value="BUENOS AIRES">Buenos Aires</option>
+                        <option value="CATAMARCA">Catamarca</option>
+                        <option value="CHACO">Chaco</option>
+                        <option value="CHUBUT">Chubut</option>
+                        <option value="CÓRDOBA">Córdoba</option>
+                        <option value="CORRIENTES">Corrientes</option>
+                        <option value="ENTRE RÍOS">Entre Ríos</option>
+                        <option value="FORMOSA">Formosa</option>
+                        <option value="JUJUY">Jujuy</option>
+                        <option value="LA PAMPA">La Pampa</option>
+                        <option value="LA RIOJA">La Rioja</option>
+                        <option value="MENDOZA">Mendoza</option>
+                        <option value="MISIONES">Misiones</option>
+                        <option value="NEUQUÉN">Neuquén</option>
+                        <option value="RÍO NEGRO">Río Negro</option>
+                        <option value="SALTA">Salta</option>
+                        <option value="SAN JUAN">San Juan</option>
+                        <option value="SAN LUIS">San Luis</option>
+                        <option value="SANTA CRUZ">Santa Cruz</option>
+                        <option value="SANTA FE">Santa Fe</option>
+                        <option value="SANTIAGO DEL ESTERO">Santiago del Estero</option>
+                        <option value="TIERRA DEL FUEGO">Tierra del Fuego</option>
+                        <option value="TUCUMÁN">Tucumán</option>     
+                    </select>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="filtersWindow">
-        <span>Filtros</span>
-        <div>
-            <label for="especialidad-formativa-selector">Especialidad formativa</label>
-            <select id="especialidad-formativa-selector">
-                <option value="" selected disabled>SELECCIONAR</option>
-                <option value="AUTOMATIZACION INDUSTRIAL">Automatización industrial</option>
-                <option value="BIOTECNOLOGIA VEGETAL">Biotecnología vegetal</option>
-                <option value="ENERGÍAS RENOVABLES Y ALTERNATIVAS">Energías renovables y alternativas</option>
-                <option value="GENERICA">Genérica</option>
-                <option value="INFORMATICA, REDES Y REPARACION DE PC">Informática, redes y reparación de PC</option>
-                <option value="INSTALACIONES DOMICILIARIAS">Instalaciones domiciliarias</option>
-                <option value="METALMECANICA">Metlamecánica</option>
-                <option value="REFRIGERACION Y CLIMATIZACION">Refrigeración y climatización</option>
-                <option value="REPARACION DE AUTOS Y MOTOS">Reparación de autos y motos</option>
-                <option value="SABERES DIGITALES">Saberes digitales</option>
-                <option value="SISTEMAS TECNOLOGICOS">Sistemas tecnológicos</option>
-                <option value="TEXTIL E INDUMENTARIA">Textil e indumentaria</option>
-            </select>
-        </div>
-
-        <div>
-            <label for="provincia-selector">Provincia</label>
-            <select id="provincia-selector">
-                <option value="" selected disabled>SELECCIONAR</option>
-                <option value="BUENOS AIRES">Buenos Aires</option>
-                <option value="CATAMARCA">Catamarca</option>
-                <option value="CHACO">Chaco</option>
-                <option value="CHUBUT">Chubut</option>
-                <option value="CÓRDOBA">Córdoba</option>
-                <option value="CORRIENTES">Corrientes</option>
-                <option value="ENTRE RÍOS">Entre Ríos</option>
-                <option value="FORMOSA">Formosa</option>
-                <option value="JUJUY">Jujuy</option>
-                <option value="LA PAMPA">La Pampa</option>
-                <option value="LA RIOJA">La Rioja</option>
-                <option value="MENDOZA">Mendoza</option>
-                <option value="MISIONES">Misiones</option>
-                <option value="NEUQUÉN">Neuquén</option>
-                <option value="RÍO NEGRO">Río Negro</option>
-                <option value="SALTA">Salta</option>
-                <option value="SAN JUAN">San Juan</option>
-                <option value="SAN LUIS">San Luis</option>
-                <option value="SANTA CRUZ">Santa Cruz</option>
-                <option value="SANTA FE">Santa Fe</option>
-                <option value="SANTIAGO DEL ESTERO">Santiago del Estero</option>
-                <option value="TIERRA DEL FUEGO">Tierra del Fuego</option>
-                <option value="TUCUMÁN">Tucumán</option>     
-            </select>
-        </div>
-    </div>
 
     <div class="mapContainer">
         <div id="map"></div>
@@ -111,9 +151,18 @@
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
-    var marker = L.marker([51.5, -0.09]).addTo(map);
+    const aula24 = L.marker([-34.58290,-58.47923]).addTo(map);
+    aula24.bindPopup(`
+        <b>Aula 24</b><br>
+        Estado: En actividad <br>
+        Especialidad: Instalaciones domiciliarias<br>
+        Localidad: Parque Chas <br>
+        <a href="/aula-movil-demo">Más información</a>`).openPopup();
+    
+    const aula71 = L.marker([-34.70664,-58.37149]).addTo(map);
+    aula71.bindPopup("<b>Aula 71</b><br>Estado: En receso <br> Especialidad: Genérica <br>Localidad: Lanús Este<br><a href='/aula-movil-demo'>Más información</a>").openPopup();
 
-    marker.bindPopup("<b>Aula 13!</b><br>Estado: Abierta <br> Materias: Detonación de explosivos químicos").openPopup();
+
 
     function getUserLocation() {
         if ("geolocation" in navigator) {
@@ -123,7 +172,7 @@
                     const long = position.coords.longitude;
 
                     console.log(`Latitude: ${lat}, longitude: ${long}`);
-                    map.setView([lat, long], 13)
+                    map.setView([lat, long], 11)
                 },
                 (error) => {
                     console.error("Error getting user location:", error);
@@ -135,4 +184,5 @@
     }
 
     getUserLocation()
+
 </script>

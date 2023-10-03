@@ -204,8 +204,10 @@ div.loading-dots .dot-lg {
 
 #messageArea {
     background-color: white !important;
+    color: white !important;
+
 }
 
-#botmanWidgetRoot div div {
+#botmanWidgetRoot div div div {
     color: white !important;
 }

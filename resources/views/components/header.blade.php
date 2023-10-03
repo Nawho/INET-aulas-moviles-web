@@ -9,10 +9,10 @@
     <link href="{{ asset('css/header.css') }}" rel="stylesheet" type="text/css">
 <body>
     <header>
-        <div class="logoContainer">
+        <a class="logoContainer" href="/">
             <img id="imageLogo" src="imgs/LogoWhite.png" alt="Logo">
             <span class="title">Aulas móviles</span>
-        </div>
+        </a>
 
         <div class="mobileMenu">
             <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
