@@ -12,12 +12,11 @@ Fue desarrollada para ser <i> responsive </i> con un criterio <i>mobile-first</i
 ### Tecnologías
 <b>Frontend</b>
 - PHP 8
-- Laravel 10
+- Laravel 9
 - Blade
 - HTML5
 - CSS3
 - Javascript ES6
-- PHP Unit 10 (Testing)
 
 <b> Backend </b>
 - MySQL
