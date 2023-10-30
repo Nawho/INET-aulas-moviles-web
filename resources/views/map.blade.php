@@ -145,12 +145,15 @@
 
 </html>
 <script>
+
+    
     const map = L.map('map').setView([-39.20, -65.43], 4);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 100,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
+    /*
     const aula24 = L.marker([-34.58290,-58.47923]).addTo(map);
     aula24.bindPopup(`
         <b>Aula 24</b><br>
@@ -161,7 +164,36 @@
     
     const aula71 = L.marker([-34.70664,-58.37149]).addTo(map);
     aula71.bindPopup("<b>Aula 71</b><br>Estado: En receso <br> Especialidad: Genérica <br>Localidad: Lanús Este<br><a href='/aula-movil-demo'>Más información</a>").openPopup();
+    */
 
+    function capitalizeFirstLetter(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    }
+
+    function getAulasOverview() {
+        fetch('{{ url('/aulas-moviles-overview') }}')
+        .then(response => {
+            if (!response.ok) {
+                console.log(response)
+                throw new Error('Data request failed.');
+            }
+            return response.json();
+        })
+        .then(aulasMovilesList => {
+            aulasMovilesList.forEach((aulaMovil) => {
+                const newAula = L.marker([aulaMovil.ubicaciones[0]?.longitud || 0, aulaMovil.ubicaciones[0]?.latitud || 0]).addTo(map);
+                newAula.bindPopup(`
+                    <b>Aula ${aulaMovil.n_ATM}</b><br>
+                    Estado: ${aulaMovil.estado == 1 ? "En actividad" : "En receso"} <br>
+                    Especialidad: ${capitalizeFirstLetter(aulaMovil.especialidad_formativa)}<br>
+                    ubicación: ${aulaMovil.ubicaciones[0]?.localidad || ""}, ${aulaMovil.ubicaciones[0]?.provincia || ""} <br>
+                    <a href="/aula/${aulaMovil.n_ATM}">Más información</a>`).openPopup();
+            })
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+    }
 
 
     function getUserLocation() {
@@ -179,10 +211,14 @@
                 }
             )
         } else {
-            console.error("Geolocation is not supported by this browser.");
+            console.error("Geolocation is not supported by this browser. Auto-centering map on Buenos Aires.");
+            map.setView([-34.58290,-58.47923], 11)
         }
     }
 
+document.addEventListener('DOMContentLoaded', function() {
     getUserLocation()
+    getAulasOverview()
+})
 
 </script>

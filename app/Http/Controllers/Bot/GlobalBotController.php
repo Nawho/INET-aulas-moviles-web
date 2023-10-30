@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Bot;
 
 use App\Conversations\MainConversation;
 use App\Http\Controllers\Bot\BotController;
@@ -15,19 +15,17 @@ class GlobalBotController extends BotController
         // You can access the botman object with this line
         $botman = $this->botman;
 
-   
-        $botman->hears('{message}', function($botman, $message) {
-   
+
+        $botman->hears('{message}', function ($botman, $message) {
+
             if ($message == 'hola') {
                 $botman->startConversation(new MainConversation());
 
-            }
-            
-            else {
+            } else {
                 $botman->reply("Di 'hola' para comenzar");
             }
         });
-   
+
         $botman->listen();
     }
 }

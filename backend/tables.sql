@@ -1,3 +1,61 @@
+create database inet;
+use inet;
+
+DROP TABLE IF EXISTS oferta_formativa;
+DROP TABLE IF EXISTS contacto;
+DROP VIEW IF EXISTS aula_movil_overview;
+DROP TABLE IF EXISTS ubicacion_aula_x_fecha;
+DROP TABLE IF EXISTS aula_movil_details;
+
+CREATE TABLE aula_movil_details (
+    n_ATM VARCHAR(20) NOT NULL,
+    CUE VARCHAR(15),
+    estado int NOT NULL,
+    especialidad_formativa VARCHAR(100) NOT NULL,
+    fecha_ult_actualizacion DATETIME NOT NULL,
+    
+    PRIMARY KEY (n_ATM),
+    CHECK (estado IN (1,2))
+);
+
+CREATE TABLE oferta_formativa (
+	id INT NOT NULL AUTO_INCREMENT,
+    n_aula_movil VARCHAR(20) NOT NULL,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion VARCHAR(1000) NOT NULL,
+    familia_profesional VARCHAR(100) NOT NULL,
+    fecha_inicio DATE NOT NULL,
+    fecha_fin DATE NOT NULL,
+
+	PRIMARY KEY (id),
+    CONSTRAINT FOREIGN KEY (n_aula_movil) REFERENCES aula_movil_details(n_ATM)
+);
+
+CREATE TABLE contacto (
+    n_aula_movil VARCHAR(20) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    tel VARCHAR(50) NOT NULL,
+
+	PRIMARY KEY (n_aula_movil),
+    CONSTRAINT FOREIGN KEY (n_aula_movil) REFERENCES aula_movil_details(n_ATM)
+);
+
+CREATE VIEW aula_movil_overview AS 
+SELECT n_ATM, estado, especialidad_formativa FROM aula_movil_details;
+
+CREATE TABLE ubicacion_aula_x_fecha(
+    n_aula_movil VARCHAR(20) NOT NULL,
+    fecha DATE NOT NULL,
+    longitud FLOAT NOT NULL,
+    latitud FLOAT NOT NULL,
+    localidad VARCHAR(50) NOT NULL,
+    provincia VARCHAR(50) NOT NULL,
+    codigo_postal VARCHAR(20) NOT NULL,
+
+    PRIMARY KEY (n_aula_movil, fecha),
+    CONSTRAINT FOREIGN KEY (n_aula_movil) REFERENCES aula_movil_details(n_ATM)
+);
+
 INSERT INTO aula_movil_details VALUES ("24","62251206","2","INSTALACIONES DOMICILIARIAS","2023-10-28:13-15-00");
 INSERT INTO aula_movil_details VALUES ("29","62251205","2","INFORMÁTICA, REDES Y REPARACIÓN DE PC","2023-10-28:13-15-00");
 INSERT INTO aula_movil_details VALUES ("68","62251208","2","INSTALACIONES DOMICILIARIAS","2023-10-28:13-15-00");
@@ -120,4 +178,8 @@ INSERT INTO aula_movil_details VALUES ("52","660160503","2","REFRIGERACIÓN Y CL
 INSERT INTO aula_movil_details VALUES ("98","660160505","2","REPARACIÓN DE AUTOS Y MOTOS","2023-10-28:13-15-00");
 INSERT INTO aula_movil_details VALUES ("112","660160504","2","SOLDADURA","2023-10-28:13-15-00");
 INSERT INTO aula_movil_details VALUES ("17 (TRAILER )","660160501","2","INSTALACIONES DOMICILIARIAS","2023-10-28:13-15-00");
-INSERT INTO aula_movil_details VALUES ("164","A SOLICICTAR ","","SISTEMAS TECNOLOGICOS","2023-10-28:13-15-00");
+INSERT INTO aula_movil_details VALUES ("164","A SOLICICTAR","2","SISTEMAS TECNOLOGICOS","2023-10-28:13-15-00");
+
+INSERT INTO contacto VALUES ("112", "aulainformaticaejemplo@gmail.com", "+5491144445555");
+
+INSERT INTO ubicacion_aula_x_fecha VALUES ("112", "2023-10-28", "-34.58290" ,"-58.47923", "Villa del Parque", "CABA", "1419");

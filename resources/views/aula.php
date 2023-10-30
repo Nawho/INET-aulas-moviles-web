@@ -19,10 +19,11 @@
             }
         </style>
     </head>
+
     <body class="antialiased">
         @include('components.header')
-        <h1>Aula móvil N°24 (Activa)</h1>
-
+        <h1>Aula móvil {{$n_aula}} {{n_aula}} (Activa)</h1>
+        
         <main >
                 <div id="map" ></div>
 
@@ -68,5 +69,34 @@
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
-    const aula24 = L.marker([-34.58290,-58.47923]).addTo(map);
+    const aulaID = "{{ $n_aula }}";
+    console.log(aulaID)
+
+    function capitalizeFirstLetter(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    }
+
+    function getAulaDetails() {
+        fetch(`/aula-movil-details/${'112'}`, {method: 'get'})
+        .then(response => {
+            if (!response.ok) {
+                console.log(response)
+                throw new Error('Data request failed.');
+            }
+            return response.json();
+        })
+        .then(aulaMovilesDetails => {
+            console.log(aulaMovilesDetails)
+           
+            })
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+    }
+
+    
+document.addEventListener('DOMContentLoaded', function() {
+    getAulaDetails()
+})
 </script>
