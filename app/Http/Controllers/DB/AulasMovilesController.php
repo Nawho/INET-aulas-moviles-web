@@ -11,12 +11,6 @@ class AulasMovilesController extends Controller
     public function getAllAulasMovilesOverview()
     {
         $aulasMovilesOverview = AulaMovilOverview::with("ubicaciones")->get();
-
-        // Iterate through each record and include the accessor field in the result
-        $aulasMovilesOverview->each(function ($aulaMovil) {
-            $aulaMovil->provincia_localidad = $aulaMovil->provincia_localidad;
-        });
-
         return response()->json($aulasMovilesOverview, 200);
     }
 

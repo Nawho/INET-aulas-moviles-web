@@ -55,7 +55,28 @@ const filters = {
     "localidad": ""
 }
 
-const map = L.map('map').setView([-39.20, -65.43], 4);
+const map = L.map('map').setView([-35.20, -65.43], 4);
+const markersLayer = L.layerGroup()
+markersLayer.addTo(map);
+
+
+const greenMaker = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
+const redMaker = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
 
 function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
@@ -79,28 +100,58 @@ function getUserLocation() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-    const especialidadSelector = document.querySelector('#especialidad-formativa-selector')
-    const provinciaSelector = document.querySelector('#provincia-selector')
-    const localidadSelector = document.querySelector('#localidad-selector')
+function updateMap(aulasList) {
+    markersLayer.clearLayers()
 
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 100,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(map);
+    const filteredAulasList = aulasList.filter((item) => {
+        return (item.especialidad_formativa.toLowerCase().includes(filters.especialidad.toLowerCase()) || filters.especialidad == "") &&
+        (item.ubicaciones[0].provincia.toLowerCase() == filters.provincia.toLowerCase() || filters.provincia == "") &&
+        (item.ubicaciones[0].localidad.toLowerCase() == filters.localidad.toLowerCase() || filters.localidad == "")
+    })
 
-    getUserLocation()
-    
-    const aulasMovilesList = await getAulasOverview()
-    aulasMovilesList.forEach((aulaMovil) => {
-        const newAula = L.marker([aulaMovil.ubicaciones[0]?.longitud || 0, aulaMovil.ubicaciones[0]?.latitud || 0]).addTo(map);
+    filteredAulasList.forEach((aulaMovil) => {
+        const newAula = L.marker([aulaMovil.ubicaciones[0]?.longitud || 0, aulaMovil.ubicaciones[0]?.latitud || 0], {
+            icon: aulaMovil.estado == 1 ? greenMaker : redMaker
+        }).addTo(markersLayer)
+
         newAula.bindPopup(`
             <b>Aula ${aulaMovil.n_ATM}</b><br>
             Estado: ${aulaMovil.estado == 1 ? "En actividad" : "En receso"} <br>
             Especialidad: ${capitalizeFirstLetter(aulaMovil.especialidad_formativa)}<br>
-            ubicación: ${aulaMovil.ubicaciones[0]?.localidad || ""}, ${aulaMovil.ubicaciones[0]?.provincia || ""} <br>
+            Ubicación: ${aulaMovil.ubicaciones[0]?.localidad || ""}, ${aulaMovil.ubicaciones[0]?.provincia || ""} <br>
             <a href="/aula/${aulaMovil.n_ATM}">Más información</a>`).openPopup();
     })
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const especialidadSelector = document.querySelector('#especialidad-formativa-selector')
+    const provinciaSelector = document.querySelector('#provincia-selector')
+    const localidadSelector = document.querySelector('#localidad-selector')
+    let aulasMovilesList = []
+
+    function addChangeListener(selector, property) {
+        selector.addEventListener('change', () => {
+            filters[property] = selector.value;
+            updateMap(aulasMovilesList);
+        });
+    }
+
+    //    L.tileLayer('https://a.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+        
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        id: 'osm-hot'
+    }).addTo(map);
+
+    getUserLocation()
+
+    addChangeListener(especialidadSelector, 'especialidad');
+    addChangeListener(provinciaSelector, 'provincia');
+    addChangeListener(localidadSelector, 'localidad');
+    
+    aulasMovilesList = await getAulasOverview()
+    updateMap(aulasMovilesList, filters)
 })
 
 </script>

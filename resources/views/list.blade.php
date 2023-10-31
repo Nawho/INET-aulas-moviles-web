@@ -89,7 +89,7 @@ const DATA_TABLE_PRESET = {
             "data": "n_ATM"
         },
         {
-            "data": "ubicaciones.0.provincia"
+            "data": "ubicaciones.0.ubicacion"
         },
         {
             "data": "especialidad_formativa"
@@ -111,8 +111,9 @@ const getAulasOverview = () => new Promise(async (resolve, reject) => {
 
 const updateTable = (aulasList, filters, table) => {
     const filteredAulasList = aulasList.filter((item) => {
-        return (item.especialidad_formativa.toLowerCase().includes(filters.especialidad.toLowerCase()) || filters.especialidad == "") //&&
-        //(item.ubicaciones[0].provincia == provinciaSelector.value || provinciaSelector.value == "")
+        return (item.especialidad_formativa.toLowerCase().includes(filters.especialidad.toLowerCase()) || filters.especialidad == "") &&
+        (item.ubicaciones[0].provincia.toLowerCase() == filters.provincia.toLowerCase() || filters.provincia == "") &&
+        (item.ubicaciones[0].localidad.toLowerCase() == filters.localidad.toLowerCase() || filters.localidad == "")
     })
 
     table.DataTable().destroy()
@@ -129,6 +130,16 @@ const filters = {
     "localidad": ""
 }
 
+function addUbicacionField(aulasList) {
+    const modifiedAulasList = aulasList.forEach((aula) => {
+        const ubicacion = aula.ubicaciones[0]
+        aula.ubicaciones[0]["ubicacion"] = ubicacion.localidad + ", " + ubicacion.provincia 
+        console.log(aula)
+    })
+
+    return modifiedAulasList
+}
+
 jQuery(document).ready(async ($) => {
     const table = $('#tableList')
     const especialidadSelector = document.querySelector('#especialidad-formativa-selector')
@@ -136,6 +147,10 @@ jQuery(document).ready(async ($) => {
     const localidadSelector = document.querySelector('#localidad-selector')
 
     const aulasList = await getAulasOverview()
+    const completeAulasList = addUbicacionField(aulasList)
+
+    console.log(aulasList)
+
     let filteredAulasList = []
     table.DataTable({
         ...DATA_TABLE_PRESET,

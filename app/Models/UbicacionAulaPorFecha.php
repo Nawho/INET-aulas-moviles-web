@@ -21,10 +21,4 @@ class UbicacionAulaPorFecha extends Model
     {
         return $this->belongsTo(AulaMovilOverview::class, 'n_aula_movil', 'n_ATM');
     }
-
-    // Accessor method to combine 'provincia' and 'localidad'
-    public function getProvinciaLocalidadAttribute()
-    {
-        return $this->provincia . ', ' . $this->localidad;
-    }
 }
