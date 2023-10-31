@@ -8,15 +8,15 @@ use App\Http\Controllers\Controller;
 
 class AulasMovilesController extends Controller
 {
-    public function getAllAulasMovilesOverview()
+    static public function getAllAulasMovilesOverview()
     {
         $aulasMovilesOverview = AulaMovilOverview::with("ubicaciones")->get();
         return response()->json($aulasMovilesOverview, 200);
     }
 
-    public function getAulaMovilDetails($id)
+    static public function getAulaMovilDetails($id)
     {
-        $aulaMovilDetails = AulaMovilDetails::find($id);
+        $aulaMovilDetails = AulaMovilDetails::with(["ofertasFormativas", "contact", "ubicaciones"])->where('n_ATM', $id)->first();
         return response()->json($aulaMovilDetails, 200);
     }
 }

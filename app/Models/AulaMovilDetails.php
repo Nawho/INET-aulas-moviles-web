@@ -12,19 +12,22 @@ class AulaMovilDetails extends Model
     protected $keyType = 'string';
     protected $primaryKey = 'n_ATM';
 
+    public function ofertasFormativas()
+    {
+        return $this->hasMany(OfertaFormativa::class, 'n_aula_movil', 'n_ATM');
+    }
+
     public function contact()
     {
         return $this->hasOne(Contact::class, 'n_aula_movil', 'n_ATM');
     }
 
-    public function ofertaFormativas()
-    {
-        return $this->hasMany(OfertaFormativa::class, 'n_aula_movil', 'n_ATM');
-    }
 
     public function ubicaciones()
     {
 
         return $this->hasMany(UbicacionAulaPorFecha::class, 'n_aula_movil', 'n_ATM');
     }
+
+    
 }

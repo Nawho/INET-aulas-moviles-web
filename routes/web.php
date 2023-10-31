@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\DB\AulasMovilesController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -13,8 +14,7 @@ Route::get('/list', function () {
     return view('list');
 });
 
-Route::get('/aula/{n_aula}', function ($n_aula) {
-    return view('aula', ['n_aula' => $n_aula]);
+Route::get('/aula/{n_aula}', function($n_aula) {
+    $datos_aula = AulasMovilesController::getAulaMovilDetails($n_aula); 
+    return view('aula', ['datos_aula' => $datos_aula->getData()]);
 });
-
-
