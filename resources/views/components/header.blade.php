@@ -23,7 +23,7 @@
         <nav class="navHeader">
             <ul class="navList">
                 <li><a href="/map">Mapa</a></li>
-                <li><a href="/lista">Lista</a></li>
+                <li><a href="/list">Lista</a></li>
             </ul>
         </nav>
     </header>

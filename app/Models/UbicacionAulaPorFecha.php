@@ -8,9 +8,9 @@ class UbicacionAulaPorFecha extends Model
 {
     use HasFactory;
     protected $table = 'ubicacion_aula_x_fecha';
-    protected $primaryKey = ['n_aula_movil', 'fecha'];
-    public $incrementing = false;
-    protected $keyType = 'string';
+    protected $primaryKey = 'id';
+    public $incrementing = true;
+    protected $keyType = 'int';
 
     public function aulaMovilDetail()
     {
@@ -20,5 +20,11 @@ class UbicacionAulaPorFecha extends Model
     public function aulaMovilOverview()
     {
         return $this->belongsTo(AulaMovilOverview::class, 'n_aula_movil', 'n_ATM');
+    }
+
+    // Accessor method to combine 'provincia' and 'localidad'
+    public function getProvinciaLocalidadAttribute()
+    {
+        return $this->provincia . ', ' . $this->localidad;
     }
 }

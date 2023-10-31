@@ -20,9 +20,7 @@
 
         <main style="margin: 0px 60px;">
         <h1>Red de Aulas Talleres Móviles</h1>
-            @foreach ($articles as $article) 
-                <li>{{ $article }}</li> 
-            @endforeach 
+ 
             <p>
 
             El Programa Federal Red de Aulas Talleres Móviles creado bajo Resolución N° 176/12 aprobada por el Consejo Federal de Educación (CFE), surgió en el año 2012 ante la necesidad de asegurar espacios de formación y capacitación a personas que residen alejadas de los centros urbanos (y que, de otra manera, no hubieran podido acceder, quedando fuera del sistema educativo y del trabajo); velando así por el aseguramiento de una educación inclusiva y de calidad en todo el territorio argentino.
