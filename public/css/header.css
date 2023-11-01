@@ -1,22 +1,23 @@
 header {
+    position: relative;
+}
+
+/* NAVBAR */
+
+.navBar{
     height: 60px;
     width: 100% !important;
     display: flex;
     align-items: center;
-    background-color: var(--blue-inet);
-
+    justify-content: space-between;
     box-shadow: 0px 3px 5px 0px #1a202c48;
+    background-color: var(--blue-inet);
 }
 
-.app-header {
-    background-color: var(--white);
-    color: var(--white);
-    font-size: 1.3rem;
-
-}
+/* LOGO */
 
 .logoContainer {
-    margin-left: 16px;
+    margin-left: 20px;
     display: flex;
     align-items: center;
 }
@@ -24,47 +25,6 @@ header {
 #imageLogo {
     width: 35px;
     height: 35px;
-}
-
-.navHeader {
-    align-self: flex-end;
-    justify-self: flex-end;
-    margin-left: auto;
-    margin-right: 20px;
-
-    height: 100%;
-
-    display: flex;
-    align-items: center;
-}
-
-.navList {
-    display: flex;
-    margin: 0 !important;
-    padding: 0 !important;
-    gap: 20px;
-}
-
-.navList li {
-    display: inline-block;
-    color: white;
-}
-
-.mobileMenu {
-    align-self: flex-end;
-    justify-self: flex-end;
-    margin-left: auto;
-
-    display: none;
-    height: 100%;
-    padding: 12px;
-    cursor: pointer;
-}
-
-.mobileMenu svg {
-    width: 30px;
-    height: 30px;
-    fill: var(--white);
 }
 
 .title {
@@ -75,14 +35,105 @@ header {
     font-size: 1.2rem;
 }
 
+/* NAVLIST */
+
+.navList {
+    display: flex;
+    gap: 2rem;
+    margin-right: 20px;
+}
+
+.navList li {
+    list-style: none;
+}
+
+.navList li a{
+    text-decoration: none;
+    color: white;
+}
+
+.navList li a:hover{
+    color: #65b9fa;
+}
+
+/* MENU BUTTON */
+
+.navBar .toggleMobileMenu{
+    fill: white;
+    cursor: pointer;
+    display: none;
+    margin-right: 16px;
+}
+
+.navBar .toggleMobileMenu svg{
+    width: 30px;
+    height: 30px;
+}
+
+.hideIcon{
+    display: none;
+}
+
+/* DROPDOWN MENU */
+.dropdownMenu{
+    display: none;
+    position: absolute;
+    right: 1rem;
+    top: 65px;
+    width: 150px;
+    height: 0;
+    background-color: #1273bd;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: height 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+} 
+
+.open{
+    height: 86.40px;
+}
+
+.dropdownMenu li{
+    padding: 0.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dropdownMenu li:last-child{
+    border-top: 2px solid white;
+}
+
+.dropdownMenu li a{
+    width: 100%;
+    color: white;
+    text-align: center;
+    font-size: 16px;
+}
+.dropdownMenu li:hover{
+    background-color: #1686db;
+    border-radius: 10px 10px 0px 0px;
+    color: white;
+}
+.dropdownMenu li:hover:last-child{
+    background-color: #1686db;
+    border-radius: 0px 0px 10px 10px;
+    color: white;
+}
+
+
+
+/* RESPONSIVE */
+
 @media screen and (max-width: 768px) {
-    .navHeader {
+    .navBar .navList{
         display: none;
     }
 
-    .mobileMenu {
-        display: flex !important;
-        align-items: center;
+    .navBar .toggleMobileMenu {
+        display: block;
     }
 
+    .dropdownMenu{
+        display: block;
+    }
 }
