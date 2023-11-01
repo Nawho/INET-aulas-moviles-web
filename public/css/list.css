@@ -18,14 +18,19 @@
 
 .dataTables_scroll {
     overflow-x: scroll;
-
 }
 
-@media screen and (max-width: 480px) {
+#tableList{
+    overflow-x: scroll;
+}
+
+.dataTables_scrollHeadInner {
+    width: 100% !important;
+}
+
+
+@media screen and (width < 480px) {
     #tableList tbody tr td {
         padding: 0px;
     }
-
-
-
 }

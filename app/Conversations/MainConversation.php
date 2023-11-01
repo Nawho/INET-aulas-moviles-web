@@ -17,7 +17,6 @@ class MainConversation extends Conversation
     {
         $this->ask('¿Cuál es tu nombre?', function (Answer $answer) {
             $this->firstname = $answer->getText();
-
             $this->say('Hola ' . $this->firstname);
 
             $this->initialOptions();
@@ -31,7 +30,6 @@ class MainConversation extends Conversation
             ->callbackId('intial_options')
             ->addButtons([
                 Button::create('Aulas móviles cerca mío')->value('cerca'),
-                Button::create('Aulas móviles en el país')->value('aulas'),
                 Button::create('Catálogo de Instituciones y oferta formativa')->value('sin_informacion'),
                 Button::create('Albergues y residencias estudiantiles')->value('sin_informacion'),
                 Button::create('Vinculación laboral local para egresados')->value('sin_informacion'),
@@ -75,11 +73,6 @@ class MainConversation extends Conversation
                     $this->aulasMovilesCerca(); }
             ],
             [
-                'pattern' => '/^aulas/|Aulas',
-                'callback' => function () {
-                    $this->aulasMovilesPais(); }
-            ],
-            [
                 'pattern' => '/Sitio Web/|sitio web',
                 'callback' => function () {
                     $this->sitioWebInet(); }
@@ -120,13 +113,7 @@ class MainConversation extends Conversation
     public function aulasMovilesCerca()
     {
         //En este lugar se podría integrar con la base de datos
-        $this->say("En la localidad de CABA, tienes cerca el Aula Móvil N°15, para aprender Mecatrónica avanzada con Arduino!");
-        $this->askAnotherReason();
-    }
-
-    public function aulasMovilesPais()
-    {
-        $this->ask("¿En qué provincia?", $this->provinciaPatterns());
+        $this->say(($this->generarLink("/map", "Hacé click acá para ir al Mapa Interactivo", "target='_PARENT'")).' <br> <br>'.($this->generarLink("/list", "Hacé click acá para ver el Listado", "target='_PARENT'")));
         $this->askAnotherReason();
     }
 
@@ -139,13 +126,15 @@ class MainConversation extends Conversation
 
     public function sitioWebInet()
     {
-        $this->say($this->generarLink("https://www.inet.edu.ar", "Haciendo click accedé al Sitio Web de Inet"));
+
+        $this->say(($this->generarLink("https://www.inet.edu.ar", "Haciendo click accedé al Sitio Web de Inet", "target='_blank'")));
         $this->askAnotherReason();
     }
 
-    private function generarLink($href, $text = 'Link')
-    {
-        return "<a href='{$href}' target='_blank'>{$text}</a>";
+    private function generarLink($href, $text = 'Link', $options)
+    {   
+
+        return "<a href='{$href}' {$options} >{$text}</a>";
     }
 
     public function showOk()
