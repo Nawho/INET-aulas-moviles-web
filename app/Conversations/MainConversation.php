@@ -2,7 +2,6 @@
 
 namespace App\Conversations;
 
-use Illuminate\Foundation\Inspiring;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
@@ -10,7 +9,6 @@ use BotMan\BotMan\Messages\Conversations\Conversation;
 
 class MainConversation extends Conversation
 {
-
     protected $firstname;
 
     public function greet()
@@ -70,50 +68,28 @@ class MainConversation extends Conversation
             [
                 'pattern' => '/^cerca/|Cerca',
                 'callback' => function () {
-                    $this->aulasMovilesCerca(); }
+                    $this->aulasMovilesCerca();
+                }
             ],
             [
                 'pattern' => '/Sitio Web/|sitio web',
                 'callback' => function () {
-                    $this->sitioWebInet(); }
+                    $this->sitioWebInet();
+                }
             ],
             [
                 'pattern' => 'sin_informacion',
                 'callback' => function () {
-                    $this->sinInformacion(); }
+                    $this->sinInformacion();
+                }
             ],
         ];
-
-    }
-
-    private function provinciaPatterns()
-    {
-        return [
-            [
-                'pattern' => '/caba/|CABA',
-                'callback' => function () {
-                    $this->aulasMovilesPorProvincia("CABA"); }
-            ],
-            [
-                'pattern' => '/Buenos Aires/|Aulas',
-                'callback' => function () {
-                    $this->aulasMovilesPais(); }
-            ]
-        ];
-    }
-
-    public function aulasMovilesPorProvincia($provincia)
-    {
-        //En este lugar se podría integrar con la base de datos
-        $this->say("Las aulas móviles disponibles para $provincia son la 13, 14 y 15!");
-
-        $this->againOptions();
     }
 
     public function aulasMovilesCerca()
     {
         //En este lugar se podría integrar con la base de datos
-        $this->say(($this->generarLink("/map", "Hacé click acá para ir al Mapa Interactivo", "target='_PARENT'")).' <br> <br>'.($this->generarLink("/list", "Hacé click acá para ver el Listado", "target='_PARENT'")));
+        $this->say(($this->generarLink("/map", "Hacé click acá para ir al Mapa Interactivo", "target='_PARENT'")) . ' <br> <br>' . ($this->generarLink("/list", "Hacé click acá para ver el Listado", "target='_PARENT'")));
         $this->askAnotherReason();
     }
 
@@ -132,7 +108,7 @@ class MainConversation extends Conversation
     }
 
     private function generarLink($href, $text = 'Link', $options)
-    {   
+    {
 
         return "<a href='{$href}' {$options} >{$text}</a>";
     }

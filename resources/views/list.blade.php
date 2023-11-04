@@ -32,38 +32,31 @@
     @include('components.header')
     @include('components.filter ')
 
+    <div class="loader">
+        Cargando datos...
+    </div>
+
+
     <div class="centerHorizontally">
-        <table id="tableList" class="dataTable hover row-border stripe cell-border">
-            <thead>
+    <label>
+            <input type="checkbox" id="sort_by_closeness" value="true" /> Ordenar por cercanía
+    </label>
+    </div>
+
+    <div class="centerHorizontally">
+        <table id="tableList" class="dataTable hover row-border stripe cell-border">    
+        <thead>
                 <tr>
-                    <th>Numero</th>
+                    <th>ID</th>
                     <th>Ubicación</th>
                     <th>Especialidad</th>
-                    <th>Oferta Formativa</th>
+                    <th>Familia profesional</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>Prácticas mecánicas de reparación de bugías de Fiat 600s</td>
-                    <td>Buenos Aires</td>
-                    <td>Baradero</td>
-                    <td>INGENIERIA MECANICA</td>
-                </tr>
-                <tr>
-                    <td>Instruccion en nuevas energias naturales</td>
-                    <td>Chaco</td>
-                    <td>Nueva Pompeya</td>
-                    <td>ENERGÍAS RENOVABLES Y ALTERNATIVAS</td>
-                </tr>
-                <tr>
-                    <td>Tecnicatura en instalacion y reparacion de equipos refrigerantes</td>
-                    <td>Santa Fe</td>
-                    <td>Esteban Rams</td>
-                    <td>REFRIGERACIÓN Y CLIMATIZACIÓN</td>
-                </tr>
-            </tbody>
         </table>
     </div>
+
+  
 
     @include('components.footer')
     @include('widgets.chatbot-widget')
@@ -104,7 +97,6 @@
         long: 0
     };
 
-
     const getAulasOverview = () => new Promise(async (resolve, reject) => {
         const res = await fetch(`${BASE_URL}/api/aulas-moviles-overview`)
         if (!res.ok) reject("Error fetching classrooms list.")
@@ -114,13 +106,21 @@
     })
 
     const updateTable = (aulasList, filters, table) => {
+        const checkbox = document.querySelector("#sort_by_closeness")
+        if (checkbox.checked) {
+            getDistanceFromArray(userLocation.lat, userLocation.long, aulasList);
+            sortByDistance(aulasList);
+        }
+
         const filteredAulasList = aulasList.filter((item) => {
-            return (item.especialidad_formativa.toLowerCase().includes(filters.especialidad
+            return (
+                item.especialidad_formativa.toLowerCase().includes(filters.especialidad
                 .toLowerCase()) || filters.especialidad == "") &&
                 (item.ubicaciones[0].provincia.toLowerCase() == filters.provincia.toLowerCase() || filters
                     .provincia == "") &&
                 (item.ubicaciones[0].localidad.toLowerCase() == filters.localidad.toLowerCase() || filters
-                    .localidad == "")
+                    .localidad == ""
+            )
         })
 
         table.DataTable().destroy()
@@ -143,7 +143,6 @@
             aula.ubicaciones[0]["ubicacion"] = ubicacion.localidad + ", " + ubicacion.provincia
         })
     }
-    // LOCATION FILTER
 
     const getUserLocation = () => new Promise((resolve, reject) => {
         if ("geolocation" in navigator) {
@@ -151,7 +150,6 @@
                 (position) => {
                     const lat = position.coords.latitude;
                     const long = position.coords.longitude;
-                    console.log(`Latitude: ${lat}, longitude: ${long}`); 
 
                     userLocation.lat = lat 
                     userLocation.long = long
@@ -193,32 +191,41 @@
             //Attaching returned distance from function to array elements
             aulasList[i].ubicaciones[0].distancia = distance;
         }
-        console.log(aulasList);
     }
 
     function sortByDistance(aulasList) {
         aulasList.sort(function(a, b) {
             return a.ubicaciones[0].distancia - b.ubicaciones[0].distancia
         });
-        console.log(aulasList);
     }
 
+    function initalFiltersUpdate(especialidadSelector, provinciaSelector, localidadSelector, aulasList, table) {
+        filters["especialidad"] = especialidadSelector.value;
+        filters["provincia"] = provinciaSelector.value;
+        filters["localidad"] = localidadSelector.value;
+
+        updateTable(aulasList, filters, table)
+    }
 
     jQuery(document).ready(async ($) => {
         const table = $('#tableList')
         const especialidadSelector = document.querySelector('#especialidad-formativa-selector')
         const provinciaSelector = document.querySelector('#provincia-selector')
         const localidadSelector = document.querySelector('#localidad-selector')
+        const loader = document.querySelector('.loader')
+        const customHeaders = ['id', 'ubicacion', 'especialidad', 'familia profesional']; 
+        const sortByClosestDistance = document.querySelector('#sort_by_closeness')
 
         const aulasList = await getAulasOverview()
+        loader.style.display = 'none'
         addUbicacionField(aulasList)
-        console.log(aulasList);
 
         let filteredAulasList = []
         table.DataTable({
             ...DATA_TABLE_PRESET,
-            data: aulasList
+            data: aulasList,
         })
+
 
         function addChangeListener(selector, property) {
             selector.addEventListener('change', () => {
@@ -227,15 +234,12 @@
             });
         }
 
+
         addChangeListener(especialidadSelector, 'especialidad');
         addChangeListener(provinciaSelector, 'provincia');
         addChangeListener(localidadSelector, 'localidad');
 
-        console.log("LOCATION: ", userLocation)
         await getUserLocation();
-        getDistanceFromArray(userLocation.lat, userLocation.long, aulasList);
-        sortByDistance(aulasList);
-        updateTable(aulasList, filters, table)
-
-    });
+        initalFiltersUpdate(especialidadSelector, provinciaSelector, localidadSelector, aulasList, table)
+});
 </script>

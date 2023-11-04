@@ -15,7 +15,6 @@
     max-width: 80vw !important;
 }
 
-
 .dataTables_scroll {
     overflow-x: scroll;
 }
@@ -26,6 +25,12 @@
 
 .dataTables_scrollHeadInner {
     width: 100% !important;
+}
+
+.loader {
+    text-align: center;
+    font-weight: 500;
+    font-size: 1.5rem;
 }
 
 

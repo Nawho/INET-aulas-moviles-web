@@ -1,27 +1,14 @@
 {
-    "name": "laravel/laravel",
+    "name": "laravel/inet_aulas_moviles",
     "type": "project",
-    "description": "The Laravel Framework.",
+    "description": "Desarrollo para las prácticas profesionalizantes del INET. Creación de una web con información sobre las aulas móviles, incluyendo una lista y un mapa interactivo con filtros junto con un chatbot para consultar.",
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "php": "^8.0.2",
+        "php": "^8.2",
         "botman/botman": "^2.7",
         "botman/driver-web": "^1.5",
-        "laravel/framework": "^9.19"
-    },
-
-    "autoload": {
-        "psr-4": {
-            "App\\": "app/",
-            "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Tests\\": "tests/"
-        }
+        "laravel/framework": "^10.0"
     },
     "scripts": {
         "post-autoload-dump": [
@@ -38,16 +25,9 @@
             "@php artisan key:generate --ansi"
         ]
     },
-    "extra": {
-        "laravel": {
-            "dont-discover": []
-        }
-    },
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }

@@ -59,9 +59,9 @@ CREATE TABLE ubicacion_aula_x_fecha(
 );
 
 
-INSERT INTO aula_movil_details VALUES ("24","62251206","2","INSTALACIONES DOMICILIARIAS","2023-10-28:13-15-00");
-INSERT INTO aula_movil_details VALUES ("29","62251205","2","INFORMÁTICA, REDES Y REPARACIÓN DE PC","2023-10-28:13-15-00");
-INSERT INTO aula_movil_details VALUES ("68","62251208","2","INSTALACIONES DOMICILIARIAS","2023-10-28:13-15-00");
+INSERT INTO aula_movil_details VALUES ("24","62251206","1","INSTALACIONES DOMICILIARIAS","2023-10-28:13-15-00");
+INSERT INTO aula_movil_details VALUES ("29","62251205","1","INFORMÁTICA, REDES Y REPARACIÓN DE PC","2023-10-28:13-15-00");
+INSERT INTO aula_movil_details VALUES ("68","62251208","1","INSTALACIONES DOMICILIARIAS","2023-10-28:13-15-00");
 INSERT INTO aula_movil_details VALUES ("71","62251207","2","GENÉRICA","2023-10-28:13-15-00");
 INSERT INTO aula_movil_details VALUES ("73","A SOLICICTAR ","2","INFORMÁTICA, REDES Y REPARACIÓN DE PC - GENÉRICA","2023-10-28:13-15-00");
 INSERT INTO aula_movil_details VALUES ("97","62251209","2","SOLDADURA","2023-10-28:13-15-00");
@@ -185,9 +185,9 @@ INSERT INTO aula_movil_details VALUES ("164","A SOLICICTAR","2","SISTEMAS TECNOL
 
 INSERT INTO contacto VALUES ("112", "aulainformaticaejemplo@gmail.com", "+5491144445555");
 
-INSERT INTO  ubicacion_aula_x_fecha (n_aula_movil, fecha_inicio, fecha_fin, longitud, latitud, localidad, provincia, codigo_postal) VALUES ("24", "2023-10-28", "2023-11-30", "-36.6769415180527", "-60.5588319815719", "No especificada", "Buenos Aires", "7600");
-INSERT INTO  ubicacion_aula_x_fecha (n_aula_movil, fecha_inicio, fecha_fin, longitud, latitud, localidad, provincia, codigo_postal) VALUES ("29", "2023-10-28", "2023-11-30", "-36.6769415180527", "-60.5588319815719", "No especificada", "Buenos Aires", "7600");
-INSERT INTO  ubicacion_aula_x_fecha (n_aula_movil, fecha_inicio, fecha_fin, longitud, latitud, localidad, provincia, codigo_postal) VALUES ("68", "2023-10-28", "2023-11-30", "-36.6769415180527", "-60.5588319815719", "No especificada", "Buenos Aires", "7600");
+INSERT INTO  ubicacion_aula_x_fecha (n_aula_movil, fecha_inicio, fecha_fin, longitud, latitud, localidad, provincia, codigo_postal) VALUES ("24", "2023-10-28", "2023-11-30", "-36.6769815180527", "-60.5988319815719", "No especificada", "Buenos Aires", "7600");
+INSERT INTO  ubicacion_aula_x_fecha (n_aula_movil, fecha_inicio, fecha_fin, longitud, latitud, localidad, provincia, codigo_postal) VALUES ("29", "2023-10-28", "2023-11-30", "-36.7769015180527", "-60.5088319815719", "No especificada", "Buenos Aires", "7600");
+INSERT INTO  ubicacion_aula_x_fecha (n_aula_movil, fecha_inicio, fecha_fin, longitud, latitud, localidad, provincia, codigo_postal) VALUES ("68", "2023-10-28", "2023-11-30", "-36.9779415180527", "-60.5528319815719", "No especificada", "Buenos Aires", "7600");
 INSERT INTO  ubicacion_aula_x_fecha (n_aula_movil, fecha_inicio, fecha_fin, longitud, latitud, localidad, provincia, codigo_postal) VALUES ("71", "2023-10-28", "2023-11-30", "-36.6769415180527", "-60.5588319815719", "No especificada", "Buenos Aires", "7600");
 INSERT INTO  ubicacion_aula_x_fecha (n_aula_movil, fecha_inicio, fecha_fin, longitud, latitud, localidad, provincia, codigo_postal) VALUES ("73", "2023-10-28", "2023-11-30", "-36.6769415180527", "-60.5588319815719", "No especificada", "Buenos Aires", "7600");
 INSERT INTO  ubicacion_aula_x_fecha (n_aula_movil, fecha_inicio, fecha_fin, longitud, latitud, localidad, provincia, codigo_postal) VALUES ("97", "2023-10-28", "2023-11-30", "-36.6769415180527", "-60.5588319815719", "No especificada", "Buenos Aires", "7600");
