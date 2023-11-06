@@ -42,8 +42,8 @@
 const BASE_URL = "{{url('/')}}"
 
 const getAulasOverview = () => new Promise(async (resolve, reject) => {
-    const res = await fetch(`${BASE_URL}/api/aulas-moviles-overview`)
-    if (!res.ok) reject("Error fetching classrooms list.")
+    const res = await fetch(`${BASE_URL}/api/aulas-moviles-overview-map`)
+    if (!res.ok) reject("Error fetching aulas moviles list.")
 
     const jsonRes = await res.json()
     resolve(jsonRes)
@@ -100,27 +100,54 @@ function getUserLocation() {
     }
 }
 
+function formatOfertasFormativas(ofertas_formativas) {
+    if (ofertas_formativas.length == 0) return "Ahora mismo no hay ofertas disponibles para esta aula, revisa de nuevo más tarde."
+
+    let ofertas_formativas_str = ""
+    ofertas_formativas.forEach((oferta_formativa, index) => {
+        if (index == ofertas_formativas.length - 1) {
+            ofertas_formativas_str += oferta_formativa.familia_profesional
+        } else {
+            ofertas_formativas_str += oferta_formativa.familia_profesional + ", "
+        }
+    })
+    return ofertas_formativas_str
+}
+
 function updateMap(aulasList) {
     markersLayer.clearLayers()
 
     const filteredAulasList = aulasList.filter((item) => {
-        return (item.especialidad_formativa.toLowerCase().includes(filters.especialidad.toLowerCase()) || filters.especialidad == "") &&
-        (item.ubicaciones[0].provincia.toLowerCase() == filters.provincia.toLowerCase() || filters.provincia == "") &&
-        (item.ubicaciones[0].localidad.toLowerCase() == filters.localidad.toLowerCase() || filters.localidad == "")
+        return (
+            (formatOfertasFormativas(item.ofertas_formativas).toLowerCase().includes(filters.especialidad.toLowerCase()) || filters.especialidad == "") &&
+            (item.ubicaciones[0]?.provincia.toLowerCase() == filters.provincia.toLowerCase() || filters.provincia == "") &&
+            (item.ubicaciones[0]?.localidad.toLowerCase() == filters.localidad.toLowerCase() || filters.localidad == "")
+        )
     })
 
     filteredAulasList.forEach((aulaMovil) => {
+        if (aulaMovil.ubicaciones.length == 0) return
+
         const newAula = L.marker([aulaMovil.ubicaciones[0]?.longitud || 0, aulaMovil.ubicaciones[0]?.latitud || 0], {
             icon: aulaMovil.estado == 1 ? greenMaker : redMaker
         }).addTo(markersLayer)
 
+
         newAula.bindPopup(`
-            <b>Aula ${aulaMovil.n_ATM}</b><br>
-            Estado: ${aulaMovil.estado == 1 ? "En actividad" : "En receso"} <br>
-            Especialidad: ${capitalizeFirstLetter(aulaMovil.especialidad_formativa)}<br>
-            Ubicación: ${aulaMovil.ubicaciones[0]?.localidad || ""}, ${aulaMovil.ubicaciones[0]?.provincia || ""} <br>
+            <b>Aula: </b>${aulaMovil.n_ATM}<br>
+            <b>Estado: </b>${aulaMovil.estado == 1 ? "En actividad" : "En receso"} <br>
+            <b>Especialidad: </b>${capitalizeFirstLetter(formatOfertasFormativas(aulaMovil.ofertas_formativas))}<br>
+            <b>Ubicación: </b>${aulaMovil.ubicaciones[0]?.localidad || "(localidad no especificada)"}, ${aulaMovil.ubicaciones[0]?.provincia || "(provincia no especificada)"} <br>
             <a href="/aula/${aulaMovil.n_ATM}">Más información</a>`).openPopup();
     })
+}
+
+function initalFiltersUpdate(especialidadSelector, provinciaSelector, localidadSelector, aulasList) {
+    filters["especialidad"] = especialidadSelector.value;
+    filters["provincia"] = provinciaSelector.value;
+    filters["localidad"] = localidadSelector.value;
+
+    updateMap(aulasList)
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -135,8 +162,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             updateMap(aulasMovilesList);
         });
     }
-
-    //    L.tileLayer('https://a.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
         
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
@@ -151,7 +176,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     addChangeListener(localidadSelector, 'localidad');
     
     aulasMovilesList = await getAulasOverview()
-    updateMap(aulasMovilesList, filters)
+
+    initalFiltersUpdate(especialidadSelector, provinciaSelector, localidadSelector, aulasMovilesList)
 })
 
 </script>

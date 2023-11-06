@@ -16,9 +16,10 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script
-        src="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-1.13.6/cr-1.7.0/fh-3.4.0/r-2.5.0/rg-1.4.1/sc-2.2.0/datatables.min.js">
-    </script>
+
+    <script src="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-1.13.6/cr-1.7.0/fh-3.4.0/r-2.5.0/rg-1.4.1/sc-2.2.0/datatables.min.js">
+
+    </script>   
 
     <style>
         body {
@@ -30,7 +31,7 @@
 
 <body class="antialiased">
     @include('components.header')
-    @include('components.filter ')
+    @include('components.filter')
 
     <div class="loader">
         Cargando datos...
@@ -49,7 +50,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Ubicación</th>
-                    <th>Especialidad</th>
+                    <th>Nombre oferta</th>
                     <th>Familia profesional</th>
                 </tr>
             </thead>
@@ -84,12 +85,12 @@
                 "data": "ubicaciones.0.ubicacion"
             },
             {
-                "data": "especialidad_formativa"
+                "data": "nombre"
             },
             {
-                "data": "especialidad_formativa"
+                "data": "familia_profesional"
             }
-        ]
+        ],
     }
 
     const userLocation = {
@@ -98,7 +99,7 @@
     };
 
     const getAulasOverview = () => new Promise(async (resolve, reject) => {
-        const res = await fetch(`${BASE_URL}/api/aulas-moviles-overview`)
+        const res = await fetch(`${BASE_URL}/api/aulas-moviles-overview-list`)
         if (!res.ok) reject("Error fetching classrooms list.")
 
         const jsonRes = await res.json()
@@ -106,28 +107,35 @@
     })
 
     const updateTable = (aulasList, filters, table) => {
+        console.log("updating table")
         const checkbox = document.querySelector("#sort_by_closeness")
-        if (checkbox.checked) {
+        if (checkbox.checked && userLocation.lat != 0 && userLocation.long != 0) {
+            console.log("sorting by distance")
             getDistanceFromArray(userLocation.lat, userLocation.long, aulasList);
             sortByDistance(aulasList);
         }
 
         const filteredAulasList = aulasList.filter((item) => {
             return (
-                item.especialidad_formativa.toLowerCase().includes(filters.especialidad
+                (item.familia_profesional?.toLowerCase().includes(filters.especialidad
                 .toLowerCase()) || filters.especialidad == "") &&
-                (item.ubicaciones[0].provincia.toLowerCase() == filters.provincia.toLowerCase() || filters
+                (item.ubicaciones[0]?.provincia.toLowerCase() == filters.provincia.toLowerCase() || filters
                     .provincia == "") &&
-                (item.ubicaciones[0].localidad.toLowerCase() == filters.localidad.toLowerCase() || filters
-                    .localidad == ""
+                (item.ubicaciones[0]?.localidad.toLowerCase() == filters.localidad.toLowerCase() || filters
+                    .localidad == "")
             )
         })
 
-        table.DataTable().destroy()
+        console.log("got list")
+
+        if (table.DataTable()) table.DataTable().destroy()
+        console.log("destroyed old dt")
         table.DataTable({
             ...DATA_TABLE_PRESET,
             data: filteredAulasList
         })
+
+        console.log("created new dt")
         table.DataTable().draw()
     }
 
@@ -204,7 +212,28 @@
         filters["provincia"] = provinciaSelector.value;
         filters["localidad"] = localidadSelector.value;
 
+        console.log("Very good")
         updateTable(aulasList, filters, table)
+        //updateLocalidades(aulasList)
+    }
+
+    function updateLocalidades(aulasList) {
+        console.log(aulasList)
+        const localidades = new Set()
+        const localidadSelector = document.querySelector('#localidad-selector')
+
+        aulasList.forEach(aula => {
+            console.log(aula.ubicaciones[0].provincia, filters.provincia)
+            if (aula.ubicaciones[0].provincia.trim().toLowerCase() === filters.provincia.trim().toLowerCase() &&
+                (aula.familia_profesional.toLowerCase().includes(filters.especialidad.toLowerCase()) || filters.especialidad == "")) {
+                localidades.add(aula.ubicaciones[0].localidad)
+            }
+        })
+
+        localidadSelector.innerHTML = '<option value="">Todas</option>'
+        localidades.forEach(localidad => {
+            localidadSelector.innerHTML += `<option value="${localidad}">${localidad}</option>`
+        })
     }
 
     jQuery(document).ready(async ($) => {
@@ -216,6 +245,13 @@
         const customHeaders = ['id', 'ubicacion', 'especialidad', 'familia profesional']; 
         const sortByClosestDistance = document.querySelector('#sort_by_closeness')
 
+        function createAulaLinks() {
+            $('#tableList tbody').on('click', 'tr', function () {
+                var data = table.DataTable().row(this).data();
+                window.location.href = 'aula/' + data.n_ATM;
+            });
+        }
+
         const aulasList = await getAulasOverview()
         loader.style.display = 'none'
         addUbicacionField(aulasList)
@@ -225,20 +261,28 @@
             ...DATA_TABLE_PRESET,
             data: aulasList,
         })
-
+        table.DataTable().draw()
+        createAulaLinks()
 
         function addChangeListener(selector, property) {
             selector.addEventListener('change', () => {
                 filters[property] = selector.value;
+                if (property === 'provincia') {
+                    filters['localidad'] = ''
+                    localidadSelector.value = ''
+                    updateLocalidades(aulasList)
+                }
+
                 updateTable(aulasList, filters, table);
+                createAulaLinks()
             });
         }
-
 
         addChangeListener(especialidadSelector, 'especialidad');
         addChangeListener(provinciaSelector, 'provincia');
         addChangeListener(localidadSelector, 'localidad');
 
+        console.log("ghood")
         await getUserLocation();
         initalFiltersUpdate(especialidadSelector, provinciaSelector, localidadSelector, aulasList, table)
 });

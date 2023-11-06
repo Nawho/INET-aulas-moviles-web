@@ -34,7 +34,8 @@
         }
 
         h2,
-        h3 {
+        h3,
+        h4 {
             margin: 0;
         }
 
@@ -58,13 +59,13 @@
         }
 
         .aulaInfoLine {
-            font-size: 1.2rem;
+            font-size: 0.8rem;
         }
 
         .contact {
-            width: 300px;
-            padding: 8px;
-            margin-top: 20px;
+            width: 600px;
+            padding: 16px;
+            margin: 20px 0px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -133,6 +134,10 @@
                 flex-direction: column;
                 align-items: center;
             }
+
+            .contact {
+                width: 90vw;
+            }
         }
     </style>
 </head>
@@ -143,17 +148,22 @@
         <main>
             <h1> Aula móvil {{ $datos_aula->n_ATM }} ({{ $datos_aula->estado == 1 ? 'Activa' : 'En receso' }})</h1>
             <div id="map"></div>
-                <div class="ofertaFormativa">
-                    @if (isset($datos_aula->ofertas_formativas[0]))
-                        <h2>{{ $datos_aula->ofertas_formativas[0]->familia_profesional }}</h2>
-                        <h3>{{ $datos_aula->ofertas_formativas[0]->nombre }}</h3>
-                        <p>{{ $datos_aula->ofertas_formativas[0]->descripcion }}</p>
-                    @else
-                        <p>
-                            No se encontraron datos de la oferta formativa de esta aula.
-                        </p>
-                    @endif
-                </div>
+                @foreach ($datos_aula->ofertas_formativas as $oferta_formativa)
+                    <div class="ofertaFormativa">
+                        @if (isset($oferta_formativa))
+                            <h2>{{ $oferta_formativa->nombre }}</h2>
+                            <h4>{{ $oferta_formativa->familia_profesional }}</h4>
+                            <p>{{ $oferta_formativa->descripcion }}</p>
+                   
+                            <div><b>Inicio:</b> {{$oferta_formativa->fecha_inicio}}</div>
+                            <div><b>Fin:</b> {{$oferta_formativa->fecha_fin}}</div>
+                        @else
+                            <p>
+                                No se encontraron datos de la oferta formativa de esta aula.
+                            </p>
+                        @endif
+                    </div>
+                @endforeach
 
                 <div class="aulaInfoLines">
                     <div class="contact">
@@ -161,7 +171,7 @@
                         <div class="contact-title">Contacto</div>
                         <div class="mailAndTel">
                             @if (isset($datos_aula->contact->email))
-                                <a class="contactLine" href="mailto:administracion_aula24@gmail.com">                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="white">
+                                <a class="contactLine" href="mailto:administracion_aula24@gmail.com">                                    
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="white">
                                         <path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/>
                                     </svg>

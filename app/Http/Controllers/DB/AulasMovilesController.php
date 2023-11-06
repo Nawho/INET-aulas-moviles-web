@@ -2,15 +2,22 @@
 
 namespace App\Http\Controllers\DB;
 
-use App\Models\AulaMovilOverview;
+use App\Models\AulaMovilListOverview;
+use App\Models\AulaMovilMapOverview;
 use App\Models\AulaMovilDetails;
 use App\Http\Controllers\Controller;
 
 class AulasMovilesController extends Controller
 {
-    static public function getAllAulasMovilesOverview()
+    static public function getAllAulasMovilesListOverview()
     {
-        $aulasMovilesOverview = AulaMovilOverview::with("ubicaciones")->get();
+        $aulasMovilesOverview = AulaMovilListOverview::with(["ubicaciones"])->get();
+        return response()->json($aulasMovilesOverview, 200);
+    }
+
+    static public function getAllAulasMovilesMapOverview()
+    {
+        $aulasMovilesOverview = AulaMovilMapOverview::with(["ubicaciones", "ofertasFormativas"])->get();
         return response()->json($aulasMovilesOverview, 200);
     }
 

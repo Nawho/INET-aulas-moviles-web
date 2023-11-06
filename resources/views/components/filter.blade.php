@@ -9,7 +9,6 @@
     <link href="{{ asset('css/map.css') }}" rel="stylesheet" type="text/css">
 
 <body>
-
     <div class="centerHorizontally">
         <div class="filtersSectionContainer">
             <div class="filtersContainer">
@@ -69,29 +68,6 @@
                     <label for="localidad-selector"><b>Localidad</b></label>
                     <select id="localidad-selector">
                         <option value="" selected>Todas</option>
-                        <option value="BUENOS AIRES">Buenos Aires</option>
-                        <option value="CATAMARCA">Catamarca</option>
-                        <option value="CHACO">Chaco</option>
-                        <option value="CHUBUT">Chubut</option>
-                        <option value="CÓRDOBA">Córdoba</option>
-                        <option value="CORRIENTES">Corrientes</option>
-                        <option value="ENTRE RÍOS">Entre Ríos</option>
-                        <option value="FORMOSA">Formosa</option>
-                        <option value="JUJUY">Jujuy</option>
-                        <option value="LA PAMPA">La Pampa</option>
-                        <option value="LA RIOJA">La Rioja</option>
-                        <option value="MENDOZA">Mendoza</option>
-                        <option value="MISIONES">Misiones</option>
-                        <option value="NEUQUÉN">Neuquén</option>
-                        <option value="RÍO NEGRO">Río Negro</option>
-                        <option value="SALTA">Salta</option>
-                        <option value="SAN JUAN">San Juan</option>
-                        <option value="SAN LUIS">San Luis</option>
-                        <option value="SANTA CRUZ">Santa Cruz</option>
-                        <option value="SANTA FE">Santa Fe</option>
-                        <option value="SANTIAGO DEL ESTERO">Santiago del Estero</option>
-                        <option value="TIERRA DEL FUEGO">Tierra del Fuego</option>
-                        <option value="TUCUMÁN">Tucumán</option>
                     </select>
                 </div>
             </div>

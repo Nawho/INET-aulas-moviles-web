@@ -327,4 +327,9 @@ INSERT INTO  ubicacion_aula_x_fecha (n_aula_movil, fecha_inicio, fecha_fin, long
 INSERT INTO  ubicacion_aula_x_fecha (n_aula_movil, fecha_inicio, fecha_fin, longitud, latitud, localidad, provincia, codigo_postal) VALUES ("164", "2023-10-28", "2023-11-30", "-24.2991344492002", "-64.8144629600627", "No especificada", "Salta", "4400");
 
 
+INSERT INTO oferta_formativa (n_aula_movil, nombre, descripcion, fecha_inicio, fecha_fin) VALUES
+(24, "Instalaciones de aires acondicionados", "Aprende todo lo necesario para instalar aires acondicionados de la mano de tres expertos. \nDuración: 3 meses\nModalidad: presencial", "2024-03-05", "2023-06-05");
+
+
+
 

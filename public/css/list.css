@@ -33,6 +33,10 @@
     font-size: 1.5rem;
 }
 
+#tableList tr {
+    cursor: pointer;
+}
+
 
 @media screen and (width < 480px) {
     #tableList tbody tr td {
