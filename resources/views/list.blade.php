@@ -33,11 +33,6 @@
     @include('components.header')
     @include('components.filter')
 
-    <div class="loader">
-        Cargando datos...
-    </div>
-
-
     <div class="centerHorizontally">
     <label>
             <input type="checkbox" id="sort_by_closeness" value="true" /> Ordenar por cercanía
@@ -55,6 +50,12 @@
                 </tr>
             </thead>
         </table>
+    </div>
+
+    <div class="centerHorizontally">
+        <div class="loader">
+            Cargando datos...
+        </div>
     </div>
 
   
@@ -98,22 +99,37 @@
         long: 0
     };
 
+    let dbInitalized = false
+
     const getAulasOverview = () => new Promise(async (resolve, reject) => {
         const res = await fetch(`${BASE_URL}/api/aulas-moviles-overview-list`)
         if (!res.ok) reject("Error fetching classrooms list.")
 
         const jsonRes = await res.json()
+        console.log(jsonRes)
         resolve(jsonRes)
     })
 
-    const updateTable = (aulasList, filters, table) => {
-        console.log("updating table")
+    const updateTable = async (aulasList, filters, table) => {
         const checkbox = document.querySelector("#sort_by_closeness")
-        if (checkbox.checked && userLocation.lat != 0 && userLocation.long != 0) {
-            console.log("sorting by distance")
-            getDistanceFromArray(userLocation.lat, userLocation.long, aulasList);
-            sortByDistance(aulasList);
+        if (checkbox.checked) {
+            console.log("get user loc")
+            const loader = document.querySelector('.loader')
+            loader.style.display = 'block'
+            loader.innerText = 'Obteniendo ubicación...'
+            
+            getUserLocation().then(data => {
+                console.log("got user loc", data)
+                console.log("sorting by distance")
+                getDistanceFromArray(userLocation.lat, userLocation.long, aulasList);
+                sortByDistance(aulasList);
+            }).catch(err => {
+            })
+            loader.style.display = 'none'
+            loader.innerText = 'Cargando datos...'
         }
+
+        console.log("CEHCEKD", checkbox.checked)
 
         const filteredAulasList = aulasList.filter((item) => {
             return (
@@ -126,9 +142,9 @@
             )
         })
 
-        console.log("got list")
+        console.log("got list", filteredAulasList)
 
-        if (table.DataTable()) table.DataTable().destroy()
+        if (dbInitalized) table.DataTable().destroy()
         console.log("destroyed old dt")
         table.DataTable({
             ...DATA_TABLE_PRESET,
@@ -137,6 +153,8 @@
 
         console.log("created new dt")
         table.DataTable().draw()
+        
+        if (!dbInitalized) dbInitalized = true
     }
 
     const filters = {
@@ -164,26 +182,26 @@
                     resolve({lat,long})
                 },
                 (error) => {
-                    console.error("Error getting user location:", error);
+                    console.warn("Error getting user location:", error);
                     reject(`Error getting user location: ${error}`)
                 }
             )
         } else {
-            console.error("Geolocation is not supported by this browser.");
+            console.warn("Geolocation is not supported by this browser.");
             reject(`Geolocation is not supported by this browser`)
         }
     })
 
     function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
-        var R = 6371; // Radius of the earth in km
-        var dLat = deg2rad(lat2 - lat1); // deg2rad below
-        var dLon = deg2rad(lon2 - lon1);
-        var a =
+        const R = 6371; // Radius of the earth in km
+        const dLat = deg2rad(lat2 - lat1); // deg2rad below
+        const dLon = deg2rad(lon2 - lon1);
+        const a =
             Math.sin(dLat / 2) * Math.sin(dLat / 2) +
             Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
             Math.sin(dLon / 2) * Math.sin(dLon / 2);
-        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        var d = R * c; // Distance in km
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const d = R * c; // Distance in km
         return d; // distance returned
     }
 
@@ -218,7 +236,6 @@
     }
 
     function updateLocalidades(aulasList) {
-        console.log(aulasList)
         const localidades = new Set()
         const localidadSelector = document.querySelector('#localidad-selector')
 
@@ -257,17 +274,17 @@
         addUbicacionField(aulasList)
 
         let filteredAulasList = []
-        table.DataTable({
+        /*table.DataTable({
             ...DATA_TABLE_PRESET,
             data: aulasList,
         })
         table.DataTable().draw()
-        createAulaLinks()
+        createAulaLinks()*/
 
         function addChangeListener(selector, property) {
             selector.addEventListener('change', () => {
                 filters[property] = selector.value;
-                if (property === 'provincia') {
+                if (property === 'provincia' ||  property === 'especialidad') {
                     filters['localidad'] = ''
                     localidadSelector.value = ''
                     updateLocalidades(aulasList)
@@ -282,8 +299,7 @@
         addChangeListener(provinciaSelector, 'provincia');
         addChangeListener(localidadSelector, 'localidad');
 
-        console.log("ghood")
-        await getUserLocation();
         initalFiltersUpdate(especialidadSelector, provinciaSelector, localidadSelector, aulasList, table)
+        createAulaLinks()
 });
 </script>
