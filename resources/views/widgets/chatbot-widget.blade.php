@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-    <script src="app.js"></script>
+    <script src="widget.js"></script>
 
 </head>
 
