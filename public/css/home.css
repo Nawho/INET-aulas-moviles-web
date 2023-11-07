@@ -1,0 +1,37 @@
+main{
+    background-image: -moz-linear-gradient(bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(../imgs/aulaMovil.jpg);
+    background-size: cover;
+    background-position: center center;
+    height: 100vh;
+}
+.centerHorizontally {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0px 10px;
+    color: white;
+}
+
+.mainTitle{
+    font-size: 2rem;
+    color: white;
+}
+
+.subTitle{
+    font-size: 1.1rem;
+    color: white;
+    margin: 0;
+}
+
+.textImage{
+    width: 60vw;
+}
+
+.textImage img{
+    width:inherit;
+    border-radius: 12px;
+}
+
+
+
+
