@@ -231,13 +231,18 @@
         shadowSize: [41, 41]
     });
 
-    const map = L.map('map').setView([long, lat], 8);
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 100,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(map);
+    const datosExistentes = "{{ isset($datos_aula->estado) ? 1 : 0 }}"
+    if (datosExistentes == 1) {
+        console.log("datos")
 
-    const aulaMarker = L.marker([long || 0, lat || 0], {
-        icon: state == 1 ? greenMaker : redMaker
-    }).addTo(map)
-</script>
+        const map = L.map('map').setView([long, lat], 8);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 100,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        const aulaMarker = L.marker([long || 0, lat || 0], {
+            icon: state == 1 ? greenMaker : redMaker
+        }).addTo(map)
+    }
+    </script>

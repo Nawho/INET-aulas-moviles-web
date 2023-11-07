@@ -17,8 +17,9 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-    <script src="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-1.13.6/cr-1.7.0/fh-3.4.0/r-2.5.0/rg-1.4.1/sc-2.2.0/datatables.min.js">
-    </script>   
+    <script
+        src="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-1.13.6/cr-1.7.0/fh-3.4.0/r-2.5.0/rg-1.4.1/sc-2.2.0/datatables.min.js">
+    </script>
 
 
     <style>
@@ -32,16 +33,22 @@
 <body class="antialiased">
     @include('components.header')
     @include('components.filter')
-
     <div class="centerHorizontally">
-    <label>
-            <input type="checkbox" id="sort_by_closeness" value="true" /> Ordenar por cercanía
-    </label>
+        Mes de las ofertas formativas
+        <select id="ofertas-month-selector">
+            <option value="-1">Todos</option>
+        </select>
     </div>
 
     <div class="centerHorizontally">
-        <table id="tableList" class="dataTable hover row-border stripe cell-border">    
-        <thead>
+        <label>
+            <input type="checkbox" id="sort_by_closeness" value="true" /> Ordenar por cercanía
+        </label>
+    </div>
+
+    <div class="centerHorizontally">
+        <table id="tableList" class="dataTable hover row-border stripe cell-border">
+            <thead>
                 <tr>
                     <th>ID</th>
                     <th>Ubicación</th>
@@ -114,23 +121,37 @@
             const loader = document.querySelector('.loader')
             loader.style.display = 'block'
             loader.innerText = 'Obteniendo ubicación...'
-            
+
             getUserLocation().then(data => {
                 getDistanceFromArray(userLocation.lat, userLocation.long, aulasList);
                 sortByDistance(aulasList);
-            }).catch(err => { })
+            }).catch(err => {})
             loader.style.display = 'none'
             loader.innerText = 'Cargando datos...'
         }
 
+        const currentMonth = new Date().getMonth() + 1
+
         const filteredAulasList = aulasList.filter((item) => {
+            const inicio_month = new Date(item.ubicaciones[0].fecha_inicio).getMonth()+1
+            const inicio_year = new Date(item.ubicaciones[0].fecha_inicio).getFullYear()
+            const fin_month = new Date(item.ubicaciones[0].fecha_fin).getMonth()+1
+            const fin_year = new Date(item.ubicaciones[0].fecha_inicio).getFullYear()
+
+            let realFilterMonth = currentMonth + parseInt(filters.month)
+            if (realFilterMonth > 12) realFilterMonth = realFilterMonth - 12
+
+            console.log(realFilterMonth, inicio_month, fin_month)
+
             return (
                 (item.familia_profesional?.toLowerCase().includes(filters.especialidad
-                .toLowerCase()) || filters.especialidad == "") &&
-                (item.ubicaciones[0]?.provincia.toLowerCase() == filters.provincia.toLowerCase() || filters
-                    .provincia == "") &&
-                (item.ubicaciones[0]?.localidad.toLowerCase() == filters.localidad.toLowerCase() || filters
-                    .localidad == "")
+                    .toLowerCase()) || filters.especialidad == "") &&
+                (item.ubicaciones[0]?.provincia.toLowerCase() == filters.provincia.toLowerCase() ||
+                    filters.provincia == "") &&
+                (item.ubicaciones[0]?.localidad.toLowerCase() == filters.localidad.toLowerCase() ||
+                    filters.localidad == "") &&
+                (parseInt(inicio_month) <= realFilterMonth && parseInt(fin_month) >= realFilterMonth ||
+                    filters.month == "-1" ) 
             )
         })
 
@@ -147,7 +168,8 @@
     const filters = {
         "especialidad": "",
         "provincia": "",
-        "localidad": ""
+        "localidad": "",
+        "month": "-1"
     }
 
     function addUbicacionField(auxaulasList) {
@@ -164,9 +186,12 @@
                     const lat = position.coords.latitude;
                     const long = position.coords.longitude;
 
-                    userLocation.lat = lat 
+                    userLocation.lat = lat
                     userLocation.long = long
-                    resolve({lat,long})
+                    resolve({
+                        lat,
+                        long
+                    })
                 },
                 (error) => {
                     console.warn("Error getting user location:", error);
@@ -227,7 +252,8 @@
         aulasList.forEach(aula => {
             console.log(aula.ubicaciones[0].provincia, filters.provincia)
             if (aula.ubicaciones[0].provincia.trim().toLowerCase() === filters.provincia.trim().toLowerCase() &&
-                (aula.familia_profesional.toLowerCase().includes(filters.especialidad.toLowerCase()) || filters.especialidad == "")) {
+                (aula.familia_profesional.toLowerCase().includes(filters.especialidad.toLowerCase()) || filters
+                    .especialidad == "")) {
                 localidades.add(aula.ubicaciones[0].localidad)
             }
         })
@@ -238,19 +264,45 @@
         })
     }
 
+    function capitalizeFirstLetter(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    }
+
+    function createMonthSelectorOptions() {
+        const months = []
+        for (let i = 0; i < 12; i++) {
+            const month = new Date().getMonth() + 1 + i
+            let year = new Date().getFullYear()
+            year = month > 12 ? year + 1 : year
+
+            months.push(`${capitalizeFirstLetter(new Date(year, month, 0).toLocaleString('es', {
+                month: 'long'
+            }))} (${year})`)
+        }
+
+        const monthSelector = document.querySelector('#ofertas-month-selector')
+        months.forEach((month, index) => {
+            monthSelector.innerHTML += `<option value="${index}">${month} ${index}</option>`
+        })    
+    }
+
+
     jQuery(document).ready(async ($) => {
         const table = $('#tableList')
         const especialidadSelector = document.querySelector('#especialidad-formativa-selector')
         const provinciaSelector = document.querySelector('#provincia-selector')
         const localidadSelector = document.querySelector('#localidad-selector')
+        const monthsSelector = document.querySelector('#ofertas-month-selector')
+        const checkbox = document.querySelector("#sort_by_closeness")
         const loader = document.querySelector('.loader')
-        const customHeaders = ['id', 'ubicacion', 'especialidad', 'familia profesional']; 
-        const sortByClosestDistance = document.querySelector('#sort_by_closeness')
+        const customHeaders = ['id', 'ubicacion', 'especialidad', 'familia profesional'];
+
+        createMonthSelectorOptions()
 
         const aulasList = await getAulasOverview()
 
         function createAulaLinks() {
-            $('#tableList tbody').on('click', 'tr', function () {
+            $('#tableList tbody').on('click', 'tr', function() {
                 var data = table.DataTable().row(this).data();
                 window.location.href = 'aula/' + data.n_ATM;
             });
@@ -264,7 +316,7 @@
         function addChangeListener(selector, property) {
             selector.addEventListener('change', () => {
                 filters[property] = selector.value;
-                if (property === 'provincia' ||  property === 'especialidad') {
+                if (property === 'provincia' || property === 'especialidad') {
                     filters['localidad'] = ''
                     localidadSelector.value = ''
                     updateLocalidades(aulasList)
@@ -279,7 +331,27 @@
         addChangeListener(provinciaSelector, 'provincia');
         addChangeListener(localidadSelector, 'localidad');
 
+        checkbox.addEventListener('change', () => {
+            if (checkbox.checked) {
+                const loader = document.querySelector('.loader')
+                loader.style.display = 'block'
+                loader.innerText = 'Obteniendo ubicación...'
+
+                getUserLocation().then(data => {
+                    getDistanceFromArray(userLocation.lat, userLocation.long, aulasList);
+                    sortByDistance(aulasList);
+                }).catch(err => {})
+                loader.style.display = 'none'
+                loader.innerText = 'Cargando datos...'
+            }
+        })
+
+        monthsSelector.addEventListener('change', () => {
+            filters['month'] = monthsSelector.value
+            updateTable(aulasList, filters, table)
+        })
+
         initalFiltersUpdate(especialidadSelector, provinciaSelector, localidadSelector, aulasList, table)
         createAulaLinks()
-});
+    });
 </script>
