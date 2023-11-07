@@ -10,12 +10,12 @@ DROP TABLE IF EXISTS ubicacion_aula_x_fecha;
 DROP TABLE IF EXISTS aula_movil_details;
 
 CREATE TABLE aula_movil_details (
-    n_ATM VARCHAR(20) NOT NULL,
+    n_atm VARCHAR(20) NOT NULL,
     CUE VARCHAR(15),
     estado int NOT NULL,
     fecha_ult_actualizacion DATETIME NOT NULL,
     
-    PRIMARY KEY (n_ATM),
+    PRIMARY KEY (n_atm),
     CHECK (estado IN (1,2))
 );
 
@@ -29,7 +29,7 @@ CREATE TABLE oferta_formativa (
     fecha_fin DATE NOT NULL,
 
 	PRIMARY KEY (id),
-    CONSTRAINT FOREIGN KEY (n_aula_movil) REFERENCES aula_movil_details(n_ATM)
+    CONSTRAINT FOREIGN KEY (n_aula_movil) REFERENCES aula_movil_details(n_atm)
 );
 
 CREATE TABLE contacto (
@@ -38,15 +38,15 @@ CREATE TABLE contacto (
     tel VARCHAR(50) NOT NULL,
 
 	PRIMARY KEY (n_aula_movil),
-    CONSTRAINT FOREIGN KEY (n_aula_movil) REFERENCES aula_movil_details(n_ATM)
+    CONSTRAINT FOREIGN KEY (n_aula_movil) REFERENCES aula_movil_details(n_atm)
 );
 
 CREATE VIEW aula_movil_map_overview AS 
-SELECT n_ATM, estado FROM aula_movil_details;
+SELECT n_atm, estado FROM aula_movil_details;
 
 CREATE VIEW aula_movil_list_overview AS
-SELECT n_ATM, estado, oferta_formativa.familia_profesional, oferta_formativa.nombre FROM aula_movil_details
-JOIN oferta_formativa ON aula_movil_details.n_ATM = oferta_formativa.n_aula_movil;
+SELECT n_atm, estado, oferta_formativa.familia_profesional, oferta_formativa.nombre FROM aula_movil_details
+JOIN oferta_formativa ON aula_movil_details.n_atm = oferta_formativa.n_aula_movil;
 
 
 
@@ -62,7 +62,7 @@ CREATE TABLE ubicacion_aula_x_fecha(
     codigo_postal VARCHAR(20) NOT NULL,
 
     PRIMARY KEY (id),
-    CONSTRAINT FOREIGN KEY (n_aula_movil) REFERENCES aula_movil_details(n_ATM)
+    CONSTRAINT FOREIGN KEY (n_aula_movil) REFERENCES aula_movil_details(n_atm)
 );
 
 

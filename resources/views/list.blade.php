@@ -91,7 +91,7 @@
             url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json',
         },
         "columns": [{
-                "data": "n_ATM"
+                "data": "n_atm"
             },
             {
                 "data": "ubicaciones.0.ubicacion"
@@ -313,7 +313,7 @@
         function createAulaLinks() {
             $('#tableList tbody').on('click', 'tr', function() {
                 var data = table.DataTable().row(this).data();
-                window.location.href = 'aula/' + data.n_ATM;
+                window.location.href = 'aula/' + data.n_atm;
             });
         }
 

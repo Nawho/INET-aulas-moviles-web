@@ -10,10 +10,10 @@ export const DATA_TABLE_PRESET = {
         url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json',
     },
     "columns": [{
-            "data": "n_ATM"
+            "data": "n_atm"
         },
         {
-            "data": "n_ATM" //"ubicaciones.0.provincia"
+            "data": "n_atm" //"ubicaciones.0.provincia"
         },
         {
             "data": "especialidad_formativa"

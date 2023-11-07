@@ -13,11 +13,11 @@ class OfertaFormativa extends Model
 
     public function aulaMovilDetail()
     {
-        return $this->belongsTo(AulaMovilDetails::class, 'n_aula_movil', 'n_ATM');
+        return $this->belongsTo(AulaMovilDetails::class, 'n_aula_movil', 'n_atm');
     }
 
     public function aulaMovilOverview()
     {
-        return $this->belongsTo(AulaMovilMapOverview::class, 'n_aula_movil', 'n_ATM');
+        return $this->belongsTo(AulaMovilMapOverview::class, 'n_aula_movil', 'n_atm');
     }
 }

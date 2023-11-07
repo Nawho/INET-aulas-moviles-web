@@ -23,7 +23,7 @@ class AulasMovilesController extends Controller
 
     static public function getAulaMovilDetails($id)
     {
-        $aulaMovilDetails = AulaMovilDetails::with(["ofertasFormativas", "contact", "ubicaciones"])->where('n_ATM', $id)->first();
+        $aulaMovilDetails = AulaMovilDetails::with(["ofertasFormativas", "contact", "ubicaciones"])->where('n_atm', $id)->first();
         return response()->json($aulaMovilDetails, 200);
     }
 }

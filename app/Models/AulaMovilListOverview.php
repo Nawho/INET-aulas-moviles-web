@@ -9,14 +9,14 @@ class AulaMovilListOverview extends Model
 {
     use HasFactory;
     protected $table = 'aula_movil_list_overview';
-    protected $primaryKey = 'n_ATM';
+    protected $primaryKey = 'n_atm';
     public $incrementing = false;
     protected $keyType = 'string';
     public $timestamps = false;
 
     public function ubicaciones()
     {
-        return $this->hasMany(UbicacionAulaPorFecha::class, 'n_aula_movil', 'n_ATM');
+        return $this->hasMany(UbicacionAulaPorFecha::class, 'n_aula_movil', 'n_atm');
     }
 }
 

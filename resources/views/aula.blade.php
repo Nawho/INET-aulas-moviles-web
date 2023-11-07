@@ -143,9 +143,9 @@
 
 <body class="antialiased">
     @include('components.header')
-    @if ($datos_aula && isset($datos_aula->n_ATM))
+    @if ($datos_aula && isset($datos_aula->n_atm))
         <main>
-            <h1> Aula móvil {{ $datos_aula->n_ATM }} ({{ $datos_aula->estado == 1 ? 'Activa' : 'En receso' }})</h1>
+            <h1> Aula móvil {{ $datos_aula->n_atm }} ({{ $datos_aula->estado == 1 ? 'Activa' : 'En receso' }})</h1>
             <div id="map"></div>
                 @foreach ($datos_aula->ofertas_formativas as $oferta_formativa)
                     <div class="ofertaFormativa">

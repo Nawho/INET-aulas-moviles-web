@@ -131,11 +131,11 @@ function updateMap(aulasMovilesList) {
 
 
         newAula.bindPopup(`
-            <b>Aula: </b>${aulaMovil.n_ATM}<br>
+            <b>Aula: </b>${aulaMovil.n_atm}<br>
             <b>Estado: </b>${aulaMovil.estado == 1 ? "En actividad" : "En receso"} <br>
             <b>Especialidad${aulaMovil.ofertas_formativas.length > 1 ? "es" : ""}: </b>${capitalizeFirstLetter(formatOfertasFormativas(aulaMovil.ofertas_formativas))}<br>
             <b>Ubicación: </b>${aulaMovil.ubicaciones[0]?.localidad || "(localidad no especificada)"}, ${aulaMovil.ubicaciones[0]?.provincia || "(provincia no especificada)"} <br>
-            <a href="/aula/${aulaMovil.n_ATM}">Más información</a>`).openPopup();
+            <a href="/aula/${aulaMovil.n_atm}">Más información</a>`).openPopup();
     })
 }
 
