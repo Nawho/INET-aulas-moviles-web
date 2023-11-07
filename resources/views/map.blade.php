@@ -8,8 +8,8 @@
     <title>INET - Aulas móviles</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('css/map.css') }}" rel="stylesheet" type="text/css">
+    <link href="css/app.css" rel="stylesheet" type="text/css">
+    <link href="css/map.css" rel="stylesheet" type="text/css">
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
@@ -25,10 +25,7 @@
 
 <body class="antialiased">
     @include('components.header')
-
-
     @include('components.filter')
-
 
     <div class="mapContainer">
         <div id="map"></div>
@@ -114,10 +111,10 @@ function formatOfertasFormativas(ofertas_formativas) {
     return ofertas_formativas_str
 }
 
-function updateMap(aulasList) {
+function updateMap(aulasMovilesList) {
     markersLayer.clearLayers()
 
-    const filteredAulasList = aulasList.filter((item) => {
+    const filteredAulasList = aulasMovilesList.filter((item) => {
         return (
             (formatOfertasFormativas(item.ofertas_formativas).toLowerCase().includes(filters.especialidad.toLowerCase()) || filters.especialidad == "") &&
             (item.ubicaciones[0]?.provincia.toLowerCase() == filters.provincia.toLowerCase() || filters.provincia == "") &&
@@ -136,11 +133,34 @@ function updateMap(aulasList) {
         newAula.bindPopup(`
             <b>Aula: </b>${aulaMovil.n_ATM}<br>
             <b>Estado: </b>${aulaMovil.estado == 1 ? "En actividad" : "En receso"} <br>
-            <b>Especialidad: </b>${capitalizeFirstLetter(formatOfertasFormativas(aulaMovil.ofertas_formativas))}<br>
+            <b>Especialidad${aulaMovil.ofertas_formativas.length > 1 ? "es" : ""}: </b>${capitalizeFirstLetter(formatOfertasFormativas(aulaMovil.ofertas_formativas))}<br>
             <b>Ubicación: </b>${aulaMovil.ubicaciones[0]?.localidad || "(localidad no especificada)"}, ${aulaMovil.ubicaciones[0]?.provincia || "(provincia no especificada)"} <br>
             <a href="/aula/${aulaMovil.n_ATM}">Más información</a>`).openPopup();
     })
 }
+
+function updateLocalidades(aulasList) {
+    console.log("localidades update")
+        const localidades = new Set()
+        const localidadSelector = document.querySelector('#localidad-selector')
+
+
+        aulasList.forEach(aula => {
+            const ofertasIncludeEspecialidad = aula.ofertas_formativas.some(oferta => oferta.familia_profesional?.toLowerCase().includes(filters.especialidad.toLowerCase()))
+            console.log(ofertasIncludeEspecialidad)
+
+            if ((ofertasIncludeEspecialidad || filters.especialidad === "") &&
+               (aula.ubicaciones[0]?.provincia?.trim().toLowerCase() === filters.provincia.trim().toLowerCase() || filters.provincia === "")) {
+                localidades.add(aula.ubicaciones[0]?.localidad)
+            }
+        })
+
+        console.log(localidades)
+        localidadSelector.innerHTML = '<option value="">Todas</option>'
+        localidades.forEach(localidad => {
+            localidadSelector.innerHTML += `<option value="${localidad}">${localidad}</option>`
+        })
+    }
 
 function initalFiltersUpdate(especialidadSelector, provinciaSelector, localidadSelector, aulasList) {
     filters["especialidad"] = especialidadSelector.value;
@@ -148,6 +168,7 @@ function initalFiltersUpdate(especialidadSelector, provinciaSelector, localidadS
     filters["localidad"] = localidadSelector.value;
 
     updateMap(aulasList)
+    updateLocalidades(aulasList)
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -156,12 +177,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     const localidadSelector = document.querySelector('#localidad-selector')
     let aulasMovilesList = []
 
+    aulasMovilesList = await getAulasOverview()
+
     function addChangeListener(selector, property) {
-        selector.addEventListener('change', () => {
-            filters[property] = selector.value;
-            updateMap(aulasMovilesList);
-        });
-    }
+            selector.addEventListener('change', () => {
+                filters[property] = selector.value;
+                if (property === 'provincia' ||  property === 'especialidad') {
+                    filters['localidad'] = ''
+                    localidadSelector.value = ''
+                    updateLocalidades(aulasMovilesList)
+                }
+
+                updateMap(aulasMovilesList);
+            });
+        }
         
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
@@ -175,8 +204,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     addChangeListener(provinciaSelector, 'provincia');
     addChangeListener(localidadSelector, 'localidad');
     
-    aulasMovilesList = await getAulasOverview()
-
     initalFiltersUpdate(especialidadSelector, provinciaSelector, localidadSelector, aulasMovilesList)
 })
 

@@ -8,9 +8,9 @@
     <title>INET - Aulas móviles</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('css/list.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('css/table.css') }}" rel="stylesheet" type="text/css">
+    <link href="css/app.css" rel="stylesheet" type="text/css">
+    <link href="css/list.css" rel="stylesheet" type="text/css">
+    <link href="css/table.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
@@ -57,8 +57,6 @@
             Cargando datos...
         </div>
     </div>
-
-  
 
     @include('components.footer')
     @include('widgets.chatbot-widget')
@@ -113,23 +111,17 @@
     const updateTable = async (aulasList, filters, table) => {
         const checkbox = document.querySelector("#sort_by_closeness")
         if (checkbox.checked) {
-            console.log("get user loc")
             const loader = document.querySelector('.loader')
             loader.style.display = 'block'
             loader.innerText = 'Obteniendo ubicación...'
             
             getUserLocation().then(data => {
-                console.log("got user loc", data)
-                console.log("sorting by distance")
                 getDistanceFromArray(userLocation.lat, userLocation.long, aulasList);
                 sortByDistance(aulasList);
-            }).catch(err => {
-            })
+            }).catch(err => { })
             loader.style.display = 'none'
             loader.innerText = 'Cargando datos...'
         }
-
-        console.log("CEHCEKD", checkbox.checked)
 
         const filteredAulasList = aulasList.filter((item) => {
             return (
@@ -142,18 +134,13 @@
             )
         })
 
-        console.log("got list", filteredAulasList)
 
         if (dbInitalized) table.DataTable().destroy()
-        console.log("destroyed old dt")
         table.DataTable({
             ...DATA_TABLE_PRESET,
             data: filteredAulasList
         })
-
-        console.log("created new dt")
         table.DataTable().draw()
-        
         if (!dbInitalized) dbInitalized = true
     }
 
@@ -230,9 +217,7 @@
         filters["provincia"] = provinciaSelector.value;
         filters["localidad"] = localidadSelector.value;
 
-        console.log("Very good")
         updateTable(aulasList, filters, table)
-        //updateLocalidades(aulasList)
     }
 
     function updateLocalidades(aulasList) {
@@ -262,6 +247,8 @@
         const customHeaders = ['id', 'ubicacion', 'especialidad', 'familia profesional']; 
         const sortByClosestDistance = document.querySelector('#sort_by_closeness')
 
+        const aulasList = await getAulasOverview()
+
         function createAulaLinks() {
             $('#tableList tbody').on('click', 'tr', function () {
                 var data = table.DataTable().row(this).data();
@@ -269,17 +256,10 @@
             });
         }
 
-        const aulasList = await getAulasOverview()
         loader.style.display = 'none'
         addUbicacionField(aulasList)
 
         let filteredAulasList = []
-        /*table.DataTable({
-            ...DATA_TABLE_PRESET,
-            data: aulasList,
-        })
-        table.DataTable().draw()
-        createAulaLinks()*/
 
         function addChangeListener(selector, property) {
             selector.addEventListener('change', () => {
