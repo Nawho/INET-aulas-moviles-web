@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <head>
-    @vite(['resources/js/botman/widget.js'])
+    <script src="app.js"></script>
+
 </head>
 
 <script>

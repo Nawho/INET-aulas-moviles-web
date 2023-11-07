@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
@@ -8,14 +9,12 @@
     <title>INET- Aula móvil N°24 </title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel='stylesheet' href="{{ url('css/app.css') }}" type="text/css">
-    <link rel='stylesheet' href="{{ url('css/app.css') }}" type="text/css">
-
-
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-
+    <script src="app.js"></script>
+    
     <style>
         body {
             font-family: 'Nunito', sans-serif;
@@ -207,7 +206,6 @@
     @include('components.footer')
     @include('widgets.chatbot-widget')
 </body>
-
 </html>
 
 <script>
