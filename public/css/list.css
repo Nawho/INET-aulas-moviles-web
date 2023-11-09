@@ -1,7 +1,6 @@
 .centerHorizontally {
     display: flex;
     justify-content: center;
-    margin: 20px 5px;
 }
 
 .dataTables_scrollHead {
@@ -31,6 +30,14 @@
     text-align: center;
     font-weight: 500;
     font-size: 1.5rem;
+}
+
+.no-margin {
+    margin: 0 !important;
+}
+
+.my-4 {
+    margin: 16px 0;
 }
 
 #tableList tr {

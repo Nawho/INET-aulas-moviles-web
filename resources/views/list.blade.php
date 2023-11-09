@@ -33,14 +33,20 @@
 <body class="antialiased">
     @include('components.header')
     @include('components.filter')
-    <div class="centerHorizontally">
-        Mes de las ofertas formativas
-        <select id="ofertas-month-selector">
-            <option value="-1">Todos</option>
-        </select>
+    <div class="centerHorizontally no-margin">
+        <div class="filtersSectionContainer">
+            <div class="filtersContainer">
+                <div class="filter">
+                    <label for="month-selector"><b>Mes</b></label>
+                    <select id="month-selector">
+                        <option value="-1">Todos</option>
+                    </select>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="centerHorizontally">
+    <div class="centerHorizontally my-4">
         <label>
             <input type="checkbox" id="sort_by_closeness" value="true" /> Ordenar por cercanía
         </label>
@@ -131,27 +137,30 @@
         }
 
         const currentMonth = new Date().getMonth() + 1
+        const currentYear = new Date().getFullYear()
 
-        const filteredAulasList = aulasList.filter((item) => {
-            const inicio_month = new Date(item.ubicaciones[0].fecha_inicio).getMonth()+1
-            const inicio_year = new Date(item.ubicaciones[0].fecha_inicio).getFullYear()
-            const fin_month = new Date(item.ubicaciones[0].fecha_fin).getMonth()+1
-            const fin_year = new Date(item.ubicaciones[0].fecha_inicio).getFullYear()
+        const filteredAulasList = aulasList.filter((aula) => {
+            const loc_inicio_month = new Date(aula.ubicaciones[0].fecha_inicio).getMonth()+1
+            const loc_fin_month = new Date(aula.ubicaciones[0].fecha_fin).getMonth()+1
+            
+            const loc_inicio_year = new Date(aula.ubicaciones[0].fecha_inicio).getFullYear()
+            const loc_fin_year = new Date(aula.ubicaciones[0].fecha_fin).getFullYear()
 
             let realFilterMonth = currentMonth + parseInt(filters.month)
             if (realFilterMonth > 12) realFilterMonth = realFilterMonth - 12
 
-            console.log(realFilterMonth, inicio_month, fin_month)
-
+            console.log(realFilterMonth, loc_inicio_month, loc_fin_month)
+            console.log(aula)
             return (
-                (item.familia_profesional?.toLowerCase().includes(filters.especialidad
+                (aula.familia_profesional?.toLowerCase().includes(filters.especialidad
                     .toLowerCase()) || filters.especialidad == "") &&
-                (item.ubicaciones[0]?.provincia.toLowerCase() == filters.provincia.toLowerCase() ||
+                (aula.ubicaciones[0]?.provincia.toLowerCase() == filters.provincia.toLowerCase() ||
                     filters.provincia == "") &&
-                (item.ubicaciones[0]?.localidad.toLowerCase() == filters.localidad.toLowerCase() ||
+                (aula.ubicaciones[0]?.localidad.toLowerCase() == filters.localidad.toLowerCase() ||
                     filters.localidad == "") &&
-                (parseInt(inicio_month) <= realFilterMonth && parseInt(fin_month) >= realFilterMonth ||
-                    filters.month == "-1" ) 
+                (parseInt(loc_inicio_month) <= realFilterMonth && parseInt(loc_fin_month) >= realFilterMonth ||
+                    filters.month == "-1" ) &&
+                (currentMonth + parseInt(filters.month) > 12 ? loc_inicio_year <= currentYear + 1 && loc_fin_year >= currentYear + 1 : loc_inicio_year <= currentYear && loc_fin_year >= currentYear)
             )
         })
 
@@ -280,9 +289,9 @@
             }))} (${year})`)
         }
 
-        const monthSelector = document.querySelector('#ofertas-month-selector')
+        const monthSelector = document.querySelector('#month-selector')
         months.forEach((month, index) => {
-            monthSelector.innerHTML += `<option value="${index}">${month} ${index}</option>`
+            monthSelector.innerHTML += `<option value="${index}">${month}</option>`
         })    
     }
 
@@ -292,7 +301,7 @@
         const especialidadSelector = document.querySelector('#especialidad-formativa-selector')
         const provinciaSelector = document.querySelector('#provincia-selector')
         const localidadSelector = document.querySelector('#localidad-selector')
-        const monthsSelector = document.querySelector('#ofertas-month-selector')
+        const monthsSelector = document.querySelector('#month-selector')
         const checkbox = document.querySelector("#sort_by_closeness")
         const loader = document.querySelector('.loader')
         const customHeaders = ['id', 'ubicacion', 'especialidad', 'familia profesional'];
