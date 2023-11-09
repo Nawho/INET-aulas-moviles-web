@@ -12,6 +12,8 @@
 #tableList_wrapper,
 .dataTables_scroll {
     max-width: 80vw !important;
+    position: relative;
+
 }
 
 .dataTables_scroll {
@@ -42,6 +44,45 @@
 
 #tableList tr {
     cursor: pointer;
+}
+
+.tableContainer {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.flapContainer {
+    position: absolute;
+    display: flex;
+    width: 500px;
+    top: 15px;
+    left: 23px;
+    z-index: 5;
+}
+
+.flap {
+    border: 1px solid black;
+    padding: 10px;
+    padding-top: 5  px;
+    border-radius: 10px;
+    z-index: 5;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.tableBody {
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 10px;
+    z-index: 10;
+    position: relative;
+    padding: 16px;
+    margin-top: 50px;
+}
+
+.activeFlap {
+    color: white;
+    background-color: #0e68af;
 }
 
 

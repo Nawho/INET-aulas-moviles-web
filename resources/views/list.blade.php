@@ -33,18 +33,6 @@
 <body class="antialiased">
     @include('components.header')
     @include('components.filter')
-    <div class="centerHorizontally no-margin">
-        <div class="filtersSectionContainer">
-            <div class="filtersContainer">
-                <div class="filter">
-                    <label for="month-selector"><b>Mes</b></label>
-                    <select id="month-selector">
-                        <option value="-1">Todos</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div class="centerHorizontally my-4">
         <label>
@@ -52,17 +40,25 @@
         </label>
     </div>
 
-    <div class="centerHorizontally">
-        <table id="tableList" class="dataTable hover row-border stripe cell-border">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Ubicación</th>
-                    <th>Nombre oferta</th>
-                    <th>Familia profesional</th>
-                </tr>
-            </thead>
-        </table>
+    <div class="centerHorizontally tableContainer">
+        <div class="tableContainer">
+            <div class="flapContainer">
+                <div class="flap activeFlap" id="flap-active">Activas ahora</div>
+                <div class="flap" id="flap-coming">Próximamente</div>
+            </div>
+            <div class="tableBody">
+                <table id="tableList" class="dataTable hover row-border stripe cell-border">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Ubicación</th>
+                            <th>Nombre oferta</th>
+                            <th>Familia profesional</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
     </div>
 
     <div class="centerHorizontally">
@@ -301,12 +297,12 @@
         const especialidadSelector = document.querySelector('#especialidad-formativa-selector')
         const provinciaSelector = document.querySelector('#provincia-selector')
         const localidadSelector = document.querySelector('#localidad-selector')
-        const monthsSelector = document.querySelector('#month-selector')
+        const activeNowFlap = document.querySelector("#flap-active")
+        const comingFlap = document.querySelector("#flap-coming")
         const checkbox = document.querySelector("#sort_by_closeness")
         const loader = document.querySelector('.loader')
         const customHeaders = ['id', 'ubicacion', 'especialidad', 'familia profesional'];
 
-        createMonthSelectorOptions()
 
         const aulasList = await getAulasOverview()
 
@@ -355,10 +351,17 @@
             }
         })
 
-        monthsSelector.addEventListener('change', () => {
-            filters['month'] = monthsSelector.value
-            updateTable(aulasList, filters, table)
+        activeNowFlap.addEventListener('click', () => {
+            activeNowFlap.classList.add('activeFlap')
+            comingFlap.classList.remove('activeFlap')
         })
+
+        comingFlap.addEventListener('click', () => {
+            comingFlap.classList.add('activeFlap')
+            activeNowFlap.classList.remove('activeFlap')
+        })
+
+
 
         initalFiltersUpdate(especialidadSelector, provinciaSelector, localidadSelector, aulasList, table)
         createAulaLinks()
