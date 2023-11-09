@@ -176,7 +176,7 @@
                                     </svg>
                                     <span>{{ $datos_aula->contact->email }}</span>
                                 </a>
-                            @endif
+                            @endif  
 
                             @if (isset($datos_aula->contact->tel))
                                 <a class="contactLine" href="tel:+54 9 11 1213-1415">

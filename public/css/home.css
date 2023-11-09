@@ -1,37 +1,102 @@
-main{
-    background-image: -moz-linear-gradient(bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(../imgs/aulaMovil.jpg);
-    background-size: cover;
-    background-position: center center;
-    height: 100vh;
+body{
+position: relative;
 }
+
+.bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url(../imgs/icons_plumado.png);
+    background-size: auto;
+    background-size: 200px 200px;
+    z-index: -10;
+    filter:opacity(0.4);
+
+}
+
+
+p{
+margin: 0;
+}
+
+
+
 .centerHorizontally {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin: 0px 10px;
-    color: white;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+margin: 0px 10px;
+color: white;
+}
+
+.initialBackground{
+background-size: cover;
+background-position: center center;
+/*height: 100vh;
+background-image: -moz-linear-gradient(bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(../imgs/aulaMovil.jpg);*/
 }
 
 .mainTitle{
-    font-size: 2rem;
-    color: white;
+font-size: 2rem;
+color: black;
+line-height: 2.2rem;
+margin-bottom: 4px;
+text-align: center;
 }
 
 .subTitle{
-    font-size: 1.1rem;
-    color: white;
-    margin: 0;
+font-size: 1.3rem;
+color: black;
+margin-top: 4px;
+font-weight: 700;
+text-align: center;
+}
+
+.contentTitle{
+font-size: 1.15rem;
+font-weight: 800;
+margin: 0;
+}
+
+.card{
+    padding: 32px;
+    border-radius: 10px;
+    margin: 5px 20px;
+    max-width: 500px;
+}
+.blue{
+background: var(--blue-inet);
+}
+
+.white{
+background: white;
+color:var(--blue-inet);
+border: 2px solid var(--blue-inet);
 }
 
 .textImage{
-    width: 60vw;
+margin: 0px 20px;
 }
 
 .textImage img{
-    width:inherit;
-    border-radius: 12px;
+width:inherit;
+border-radius: 12px;
+max-width: 500px;
+width: 100%;
 }
 
+.backgroundGradient{
+width: 100vw;
+padding: 0px;
+padding-top: 20px;
+padding-bottom: 120px;
+color: white;
+}
 
-
-
+.backgroundGradient .blueCard:first-child {
+margin-top: 0px;
+}
+.backgroundGradient .blueCard:last-child{
+margin-bottom: 0px;
+}
