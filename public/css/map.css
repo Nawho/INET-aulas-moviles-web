@@ -4,7 +4,23 @@
     margin: 20px 0px;
 }
 
+.innerMapContainer {
+    position: relative;
+}
 
+.mapFlapContainer {
+    position: absolute;
+    display: flex;
+    width: 500px;
+    top: -35px;
+    left: 10px;
+    z-index: 5;
+}
+
+.verticalSpacer {
+    height: 50px;
+    width: 100%;
+}
 
 /* SEARCH BAR */
 #searchBarContainerHolder {
@@ -65,71 +81,21 @@
     height: 25px !important;
 }
 
-.filtersSectionContainer {
-    width: 600px;
-    margin-top: 20px;
-    border: 3px solid var(--blue-inet);
-    border-radius: 8px;
-}
 
-.filtersContainer {
-    width: 100%;
-    display: flex;
-    justify-content: space-evenly;
-    padding: 8px;
-    gap: 8px;
-    background-color: #0E68AF;
-}
-
-.filtersTitle {
-    width: 100%;
-    font-size: large;
-    align-self: flex-start;
-    text-align: center;
-    color: black;
-}
-
-.filter {
-    color: white;
-    background-color: #0E68AF;
-    border: 3px solid var(--blue-inet);
-    width: 200px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.filter label {
-    pointer-events: none;
-    font-size: small;
-    font-weight: bold;
-    margin-left: 2px;
-}
-
-
-.filter select {
-    width: 100%;
-    border-radius: 8px;
-    color: black;
-    padding: 8px;
-    background-color: white;
-    cursor: pointer;
-
-    color: black;
-}
 
 
 #map {
     height: 500px;
-    width: 600px;
+    width: var(--general-width);
 
     border: 3px solid var(--blue-inet);
     border-radius: 8px;
+    z-index: 5;
 }
 
 
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: var(--genetal-width)) {
     #map {
         height: 500px;
         width: 90vw;

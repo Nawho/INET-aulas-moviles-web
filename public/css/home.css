@@ -2,15 +2,11 @@ body{
 position: relative;
 }
 
-.bg {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: url(../imgs/icons_plumado.png);
-    background-size: auto;
-    background-size: 200px 200px;
-    z-index: -10;
-    filter:opacity(0.4);
+
+.homeContainer {
+    padding-bottom: 30px;
+    margin: 0 20px;
+    gap: 30px;
 
 }
 
@@ -26,77 +22,82 @@ display: flex;
 flex-direction: column;
 justify-content: center;
 align-items: center;
-margin: 0px 10px;
-color: white;
 }
 
-.initialBackground{
-background-size: cover;
-background-position: center center;
-/*height: 100vh;
-background-image: -moz-linear-gradient(bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(../imgs/aulaMovil.jpg);*/
+.titleContainer {
+    background-color: var(--blue-inet);
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 30px;
+    max-width: var(--general-width);
+    width: 100%;
+    color: white;
 }
 
 .mainTitle{
 font-size: 2rem;
-color: black;
 line-height: 2.2rem;
 margin-bottom: 4px;
 text-align: center;
 }
 
 .subTitle{
-font-size: 1.3rem;
-color: black;
+font-size: 1.1rem;
 margin-top: 4px;
 font-weight: 700;
 text-align: center;
 }
 
 .contentTitle{
-font-size: 1.15rem;
+font-size: 1.4rem;
 font-weight: 800;
 margin: 0;
+color: var(--blue-inet) !important;
+font-weight: 900;
 }
 
 .card{
-    padding: 32px;
+    padding: 24px 32px;
     border-radius: 10px;
-    margin: 5px 20px;
-    max-width: 500px;
+    max-width: var(--general-width);
 }
 .blue{
-background: var(--blue-inet);
+background: white;
+color: black;
+border: 3px solid var(--blue-inet);
+
 }
 
 .white{
 background: white;
-color:var(--blue-inet);
-border: 2px solid var(--blue-inet);
-}
-
-.textImage{
-margin: 0px 20px;
+color: black;
+border: 3px solid var(--blue-inet);
 }
 
 .textImage img{
 width:inherit;
+height: 100%;
 border-radius: 12px;
-max-width: 500px;
+max-width: var(--general-width);
 width: 100%;
 }
 
-.backgroundGradient{
-width: 100vw;
-padding: 0px;
-padding-top: 20px;
-padding-bottom: 120px;
-color: white;
-}
-
-.backgroundGradient .blueCard:first-child {
+.card:first-child {
 margin-top: 0px;
 }
-.backgroundGradient .blueCard:last-child{
+.card:last-child{
 margin-bottom: 0px;
+}
+
+.ctoBtn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 16px;
+    text-align: center;
+    color: white;
+    background-color: var(--blue-inet);
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
 }

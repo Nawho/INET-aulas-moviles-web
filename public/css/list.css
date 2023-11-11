@@ -16,6 +16,10 @@
 
 }
 
+    #tableList, table[aria-describedby="tableList_info"] {
+    width: 100% !important;
+}
+
 .dataTables_scroll {
     overflow-x: scroll;
 }
@@ -28,11 +32,6 @@
     width: 100% !important;
 }
 
-.loader {
-    text-align: center;
-    font-weight: 500;
-    font-size: 1.5rem;
-}
 
 .no-margin {
     margin: 0 !important;
@@ -48,10 +47,11 @@
 
 .tableContainer {
     position: relative;
+    max-width: var(--general-width);
     margin-bottom: 20px;
 }
 
-.flapContainer {
+.listFlapContainer {
     position: absolute;
     display: flex;
     width: 500px;
@@ -60,29 +60,16 @@
     z-index: 5;
 }
 
-.flap {
-    border: 1px solid black;
-    padding: 10px;
-    padding-top: 5  px;
-    border-radius: 10px;
-    z-index: 5;
-    font-weight: 600;
-    cursor: pointer;
-}
-
 .tableBody {
-    background-color: white;
-    border: 1px solid black;
-    border-radius: 10px;
-    z-index: 10;
     position: relative;
-    padding: 16px;
+    padding: 24px;
     margin-top: 50px;
-}
-
-.activeFlap {
-    color: white;
-    background-color: #0e68af;
+    border: 3px solid var(--blue-inet);
+    border-radius: 10px;
+    background-color: white;
+    z-index: 10;
+    max-width: var(--general-width) !important;
+    width: 100%;
 }
 
 

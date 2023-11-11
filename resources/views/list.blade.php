@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>INET - Aulas móviles</title>
+    <title>Lista de aulas móviles</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="css/app.css" rel="stylesheet" type="text/css">
@@ -31,18 +31,13 @@
 </head>
 
 <body class="antialiased">
+    <div class="bg"></div>
     @include('components.header')
     @include('components.filter')
 
-    <div class="centerHorizontally my-4">
-        <label>
-            <input type="checkbox" id="sort_by_closeness" value="true" /> Ordenar por cercanía
-        </label>
-    </div>
-
-    <div class="centerHorizontally tableContainer">
-        <div class="tableContainer">
-            <div class="flapContainer">
+    <div class="centerHorizontally">
+        <div class="tableContainer" style="display: none;">
+            <div class="listFlapContainer">
                 <div class="flap activeFlap" id="flap-active">Activas ahora</div>
                 <div class="flap" id="flap-coming">Próximamente</div>
             </div>
@@ -75,6 +70,13 @@
 
 <script>
     const BASE_URL = "{{ url('/') }}"
+
+    const filters = {
+        "especialidad": "",
+        "provincia": "",
+        "localidad": "",
+        "momentoActividad": "ahora"
+    }
 
     const DATA_TABLE_PRESET = {
         scrollX: true,
@@ -117,46 +119,68 @@
         resolve(jsonRes)
     })
 
-    const updateTable = async (aulasList, filters, table) => {
-        const checkbox = document.querySelector("#sort_by_closeness")
-        if (checkbox.checked) {
-            const loader = document.querySelector('.loader')
-            loader.style.display = 'block'
-            loader.innerText = 'Obteniendo ubicación...'
+    function dateDiffWithNowInDays(a) {
+        const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+        const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+        const now = Date.UTC(new Date());
+        return Math.floor((now - utc1) / _MS_PER_DAY);
+    }
 
-            getUserLocation().then(data => {
-                getDistanceFromArray(userLocation.lat, userLocation.long, aulasList);
-                sortByDistance(aulasList);
-            }).catch(err => {})
-            loader.style.display = 'none'
-            loader.innerText = 'Cargando datos...'
+    const getRelevantAulaLocations = (aula) => {
+        let locationWithNearestStartDate = null
+        let nextLocationWithNearestStartDate = null
+
+        for (let i = 0; i < aula.ubicaciones.length; i++) {
+            const ubicacion = aula.ubicaciones[i]
+            const fecha_inicio = new Date(ubicacion.fecha_inicio)
+            const fecha_fin = new Date(ubicacion.fecha_fin)
+            const now = new Date()
+
+            if (fecha_inicio <= now && fecha_fin >= now) {
+                if (locationWithNearestStartDate) {
+                    if (dateDiffWithNowInDays(fecha_inicio) < dateDiffWithNowInDays(locationWithNearestStartDate)) {
+                        locationWithNearestStartDate = ubicacion
+                    }
+                } else {
+                    locationWithNearestStartDate = ubicacion
+                }
+            }
+
+            if (fecha_inicio > now && fecha_fin > now) {
+                if (nextLocationWithNearestStartDate) {
+                    if (dateDiffWithNowInDays(fecha_inicio) < dateDiffWithNowInDays(nextLocationWithNearestStartDate)) {
+                        nextLocationWithNearestStartDate = ubicacion
+                    }
+                } else {
+                    nextLocationWithNearestStartDate = ubicacion
+                }
+            }
         }
 
+        return {
+            currentLoc: locationWithNearestStartDate,
+            nextLoc: nextLocationWithNearestStartDate
+        }
+    }
+
+    const updateTable = async (aulasList, filters, table) => {
+        const checkbox = document.querySelector("#sort_by_closeness")
         const currentMonth = new Date().getMonth() + 1
         const currentYear = new Date().getFullYear()
 
         const filteredAulasList = aulasList.filter((aula) => {
-            const loc_inicio_month = new Date(aula.ubicaciones[0].fecha_inicio).getMonth()+1
-            const loc_fin_month = new Date(aula.ubicaciones[0].fecha_fin).getMonth()+1
-            
-            const loc_inicio_year = new Date(aula.ubicaciones[0].fecha_inicio).getFullYear()
-            const loc_fin_year = new Date(aula.ubicaciones[0].fecha_fin).getFullYear()
+            const aulaLocation =  filters.momentoActividad === "ahora" ? getRelevantAulaLocations(aula).currentLoc : getRelevantAulaLocations(aula).nextLoc
+            if (!aulaLocation) return false
+            aula["ubicacion_relevante"] = aulaLocation
 
-            let realFilterMonth = currentMonth + parseInt(filters.month)
-            if (realFilterMonth > 12) realFilterMonth = realFilterMonth - 12
-
-            console.log(realFilterMonth, loc_inicio_month, loc_fin_month)
-            console.log(aula)
             return (
+                (filters.momentoActividad === "ahora" ? aula.estado === 1 : true) &&
                 (aula.familia_profesional?.toLowerCase().includes(filters.especialidad
                     .toLowerCase()) || filters.especialidad == "") &&
-                (aula.ubicaciones[0]?.provincia.toLowerCase() == filters.provincia.toLowerCase() ||
+                (aulaLocation.provincia.toLowerCase() == filters.provincia.toLowerCase() ||
                     filters.provincia == "") &&
-                (aula.ubicaciones[0]?.localidad.toLowerCase() == filters.localidad.toLowerCase() ||
-                    filters.localidad == "") &&
-                (parseInt(loc_inicio_month) <= realFilterMonth && parseInt(loc_fin_month) >= realFilterMonth ||
-                    filters.month == "-1" ) &&
-                (currentMonth + parseInt(filters.month) > 12 ? loc_inicio_year <= currentYear + 1 && loc_fin_year >= currentYear + 1 : loc_inicio_year <= currentYear && loc_fin_year >= currentYear)
+                (aulaLocation.localidad.toLowerCase() == filters.localidad.toLowerCase() ||
+                    filters.localidad == "")
             )
         })
 
@@ -170,21 +194,14 @@
         if (!dbInitalized) dbInitalized = true
     }
 
-    const filters = {
-        "especialidad": "",
-        "provincia": "",
-        "localidad": "",
-        "month": "-1"
-    }
-
     function addUbicacionField(auxaulasList) {
         const modifiedAulasList = auxaulasList.forEach((aula) => {
             const ubicacion = aula.ubicaciones[0]
-            aula.ubicaciones[0]["ubicacion"] = ubicacion.localidad + ", " + ubicacion.provincia
+            if (ubicacion) aula.ubicaciones[0]["ubicacion"] = ubicacion.localidad + ", " + ubicacion.provincia
         })
     }
 
-    const getUserLocation = () => new Promise((resolve, reject) => {
+    const getUserLocation = () => new Promise(async (resolve, reject) => {
         if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
@@ -199,7 +216,7 @@
                     })
                 },
                 (error) => {
-                    console.warn("Error getting user location:", error);
+                    console.warn("User rejected geolocation permission. Cannot center map on user location.");
                     reject(`Error getting user location: ${error}`)
                 }
             )
@@ -254,12 +271,15 @@
         const localidades = new Set()
         const localidadSelector = document.querySelector('#localidad-selector')
 
+        console.log(aulasList)
+
         aulasList.forEach(aula => {
-            console.log(aula.ubicaciones[0].provincia, filters.provincia)
-            if (aula.ubicaciones[0].provincia.trim().toLowerCase() === filters.provincia.trim().toLowerCase() &&
-                (aula.familia_profesional.toLowerCase().includes(filters.especialidad.toLowerCase()) || filters
-                    .especialidad == "")) {
-                localidades.add(aula.ubicaciones[0].localidad)
+            const loc = aula.ubicacion_relevante
+            if (!loc) return false
+
+            if ((aula.familia_profesional.toLowerCase().includes(filters.especialidad.toLowerCase()) || filters.especialidad === "") &&
+                (loc.provincia?.trim().toLowerCase() === filters.provincia.trim().toLowerCase())) {
+                localidades.add(loc.localidad)
             }
         })
 
@@ -267,6 +287,8 @@
         localidades.forEach(localidad => {
             localidadSelector.innerHTML += `<option value="${localidad}">${localidad}</option>`
         })
+
+        console.log(localidades)
     }
 
     function capitalizeFirstLetter(str) {
@@ -297,14 +319,16 @@
         const especialidadSelector = document.querySelector('#especialidad-formativa-selector')
         const provinciaSelector = document.querySelector('#provincia-selector')
         const localidadSelector = document.querySelector('#localidad-selector')
+        const tableContainer = document.querySelector('.tableContainer')
         const activeNowFlap = document.querySelector("#flap-active")
         const comingFlap = document.querySelector("#flap-coming")
         const checkbox = document.querySelector("#sort_by_closeness")
         const loader = document.querySelector('.loader')
         const customHeaders = ['id', 'ubicacion', 'especialidad', 'familia profesional'];
-
+        const filteredAulasList = []
 
         const aulasList = await getAulasOverview()
+        addUbicacionField(aulasList)
 
         function createAulaLinks() {
             $('#tableList tbody').on('click', 'tr', function() {
@@ -313,10 +337,8 @@
             });
         }
 
+        tableContainer.style.display = 'block'
         loader.style.display = 'none'
-        addUbicacionField(aulasList)
-
-        let filteredAulasList = []
 
         function addChangeListener(selector, property) {
             selector.addEventListener('change', () => {
@@ -354,14 +376,16 @@
         activeNowFlap.addEventListener('click', () => {
             activeNowFlap.classList.add('activeFlap')
             comingFlap.classList.remove('activeFlap')
+            filters.momentoActividad = "ahora"
+            updateTable(aulasList, filters, table);
         })
 
         comingFlap.addEventListener('click', () => {
             comingFlap.classList.add('activeFlap')
             activeNowFlap.classList.remove('activeFlap')
+            filters.momentoActividad = "proximamente"
+            updateTable(aulasList, filters, table);
         })
-
-
 
         initalFiltersUpdate(especialidadSelector, provinciaSelector, localidadSelector, aulasList, table)
         createAulaLinks()

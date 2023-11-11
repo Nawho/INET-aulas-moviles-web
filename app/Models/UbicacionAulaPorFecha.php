@@ -3,6 +3,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\AulaMovilListOverview;
+use App\Models\AulaMovilMapOverview;
 
 class UbicacionAulaPorFecha extends Model
 {
@@ -17,8 +19,13 @@ class UbicacionAulaPorFecha extends Model
         return $this->belongsTo(AulaMovilDetails::class, 'n_aula_movil', 'n_atm');
     }
 
-    public function aulaMovilOverview()
+    public function aulaMovilListOverview()
     {
-        return $this->belongsTo(AulaMovilOverview::class, 'n_aula_movil', 'n_atm');
+        return $this->belongsTo(AulaMovilListOverview::class, 'n_aula_movil', 'n_atm');
+    }
+
+    public function aulaMovilMapOverview()
+    {
+        return $this->belongsTo(AulaMovilMapOverview::class, 'n_aula_movil', 'n_atm');
     }
 }

@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>INET - Aulas móviles</title>
+    <title>Mapa de aulas móviles</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="css/app.css" rel="stylesheet" type="text/css">
@@ -24,11 +24,27 @@
 </head>
 
 <body class="antialiased">
+    <div class="bg"></div>
+
     @include('components.header')
     @include('components.filter')
 
-    <div class="mapContainer">
-        <div id="map"></div>
+    <div class="centerHorizontally">
+        <div class="loader">
+            Cargando datos...
+        </div>
+    </div>
+
+    <div class="verticalSpacer"></div>
+
+    <div class="mapContainer" style="display:none;">
+        <div class="innerMapContainer">
+            <div class="mapFlapContainer">
+                <div class="flap activeFlap" id="flap-active">Activas ahora</div>
+                <div class="flap" id="flap-coming">Próximamente</div>
+            </div>
+            <div id="map"></div>
+        </div>
     </div>
     @include('components.footer')
     @include('widgets.chatbot-widget')
@@ -49,7 +65,8 @@ const getAulasOverview = () => new Promise(async (resolve, reject) => {
 const filters = {
     "especialidad": "",
     "provincia": "",
-    "localidad": ""
+    "localidad": "",
+    "momentoActividad": "ahora"
 }
 
 const map = L.map('map').setView([-35.20, -65.43], 4);
@@ -85,15 +102,52 @@ function getUserLocation() {
             (position) => {
                 const lat = position.coords.latitude;
                 const long = position.coords.longitude;
-                map.setView([lat, long], 11)
+                map.setView([lat, long], 8)
             },
             (error) => {
-                console.error("Error getting user location:", error);
+                console.warn("User rejected geolocation permission. Cannot center map on user location.");
             }
         )
     } else {
         console.error("Geolocation is not supported by this browser. Auto-centering map on Buenos Aires.");
         map.setView([-34.58290,-58.47923], 11)
+    }
+}
+
+const getRelevantAulaLocations = (aula) => {
+    let locationWithNearestStartDate = null
+    let nextLocationWithNearestStartDate = null
+
+    for (let i = 0; i < aula.ubicaciones.length; i++) {
+        const ubicacion = aula.ubicaciones[i]
+        const fecha_inicio = new Date(ubicacion.fecha_inicio)
+        const fecha_fin = new Date(ubicacion.fecha_fin)
+        const now = new Date()
+
+        if (fecha_inicio <= now && fecha_fin >= now) {
+            if (locationWithNearestStartDate) {
+                if (dateDiffWithNowInDays(fecha_inicio) < dateDiffWithNowInDays(locationWithNearestStartDate)) {
+                    locationWithNearestStartDate = ubicacion
+                }
+            } else {
+                locationWithNearestStartDate = ubicacion
+            }
+        }
+
+        if (fecha_inicio > now && fecha_fin > now) {
+            if (nextLocationWithNearestStartDate) {
+                if (dateDiffWithNowInDays(fecha_inicio) < dateDiffWithNowInDays(nextLocationWithNearestStartDate)) {
+                    nextLocationWithNearestStartDate = ubicacion
+                }
+            } else {
+                nextLocationWithNearestStartDate = ubicacion
+            }
+        }
+    }
+
+    return {
+        currentLoc: locationWithNearestStartDate,
+        nextLoc: nextLocationWithNearestStartDate
     }
 }
 
@@ -111,56 +165,63 @@ function formatOfertasFormativas(ofertas_formativas) {
     return ofertas_formativas_str
 }
 
-function updateMap(aulasMovilesList) {
+function updateMap(aulasList) {
     markersLayer.clearLayers()
 
-    const filteredAulasList = aulasMovilesList.filter((item) => {
+    const filteredAulasList = aulasList.filter((aula) => {
+        const aulaLocation =  filters.momentoActividad === "ahora" ? getRelevantAulaLocations(aula).currentLoc : getRelevantAulaLocations(aula).nextLoc
+        if (!aulaLocation) return false
+        aula["ubicacion_relevante"] = aulaLocation
+
         return (
-            (formatOfertasFormativas(item.ofertas_formativas).toLowerCase().includes(filters.especialidad.toLowerCase()) || filters.especialidad == "") &&
-            (item.ubicaciones[0]?.provincia.toLowerCase() == filters.provincia.toLowerCase() || filters.provincia == "") &&
-            (item.ubicaciones[0]?.localidad.toLowerCase() == filters.localidad.toLowerCase() || filters.localidad == "")
+            (filters.momentoActividad === "ahora" ? aula.estado === 1 : true) &&
+            (formatOfertasFormativas(aula.ofertas_formativas).toLowerCase().includes(filters.especialidad.toLowerCase()) || filters.especialidad == "") &&
+            (aulaLocation.provincia.toLowerCase() == filters.provincia.toLowerCase() || filters.provincia == "") &&
+            (aulaLocation.localidad.toLowerCase() == filters.localidad.toLowerCase() || filters.localidad == "")
         )
     })
 
-    filteredAulasList.forEach((aulaMovil) => {
-        if (aulaMovil.ubicaciones.length == 0) return
+    console.log(filteredAulasList)
 
-        const newAula = L.marker([aulaMovil.ubicaciones[0]?.longitud || 0, aulaMovil.ubicaciones[0]?.latitud || 0], {
-            icon: aulaMovil.estado == 1 ? greenMaker : redMaker
+    filteredAulasList.forEach((aula) => {
+        const loc = aula.ubicacion_relevante
+        if (!loc) return false
+        if (!loc.longitud || !loc.latitud) return false
+
+        const newAula = L.marker([loc.longitud, loc.latitud], {
+            icon: aula.estado == 1 ? greenMaker : redMaker
         }).addTo(markersLayer)
 
-
         newAula.bindPopup(`
-            <b>Aula: </b>${aulaMovil.n_atm}<br>
-            <b>Estado: </b>${aulaMovil.estado == 1 ? "En actividad" : "En receso"} <br>
-            <b>Especialidad${aulaMovil.ofertas_formativas.length > 1 ? "es" : ""}: </b>${capitalizeFirstLetter(formatOfertasFormativas(aulaMovil.ofertas_formativas))}<br>
-            <b>Ubicación: </b>${aulaMovil.ubicaciones[0]?.localidad || "(localidad no especificada)"}, ${aulaMovil.ubicaciones[0]?.provincia || "(provincia no especificada)"} <br>
-            <a href="/aula/${aulaMovil.n_atm}">Más información</a>`).openPopup();
+            <b>Aula: </b>${aula.n_atm}<br>
+            <b>Estado: </b>${aula.estado === 1 ? "En actividad" : "En receso"} <br>
+            <b>Especialidad${aula.ofertas_formativas.length > 1 ? "es" : ""}: </b>${capitalizeFirstLetter(formatOfertasFormativas(aula.ofertas_formativas))}<br>
+            <b>Ubicación: </b>${loc.localidad || "(localidad no especificada)"}, ${loc.provincia || "(provincia no especificada)"} <br>
+            <a href="/aula/${aula.n_atm}">Detalles del aula</a>`
+        ).openPopup();
     })
 }
 
 function updateLocalidades(aulasList) {
-    console.log("localidades update")
-        const localidades = new Set()
-        const localidadSelector = document.querySelector('#localidad-selector')
+    const localidades = new Set()
+    const localidadSelector = document.querySelector('#localidad-selector')
 
+    aulasList.forEach(aula => {
+        const loc = aula.ubicacion_relevante
+        if (!loc) return false
 
-        aulasList.forEach(aula => {
-            const ofertasIncludeEspecialidad = aula.ofertas_formativas.some(oferta => oferta.familia_profesional?.toLowerCase().includes(filters.especialidad.toLowerCase()))
-            console.log(ofertasIncludeEspecialidad)
+        const ofertasIncludeEspecialidad = aula.ofertas_formativas.some(oferta => oferta.familia_profesional?.toLowerCase().includes(filters.especialidad.toLowerCase()))
+        if ((ofertasIncludeEspecialidad || filters.especialidad === "") &&
+            (loc.provincia?.trim().toLowerCase() === filters.provincia.trim().toLowerCase())) {
+            localidades.add(loc.localidad)
+        }
+    })
 
-            if ((ofertasIncludeEspecialidad || filters.especialidad === "") &&
-               (aula.ubicaciones[0]?.provincia?.trim().toLowerCase() === filters.provincia.trim().toLowerCase() || filters.provincia === "")) {
-                localidades.add(aula.ubicaciones[0]?.localidad)
-            }
-        })
-
-        console.log(localidades)
-        localidadSelector.innerHTML = '<option value="">Todas</option>'
-        localidades.forEach(localidad => {
-            localidadSelector.innerHTML += `<option value="${localidad}">${localidad}</option>`
-        })
-    }
+    localidadSelector.innerHTML = '<option value="">Todas</option>'
+    localidades.forEach(localidad => {
+        localidadSelector.innerHTML += `<option value="${localidad}">${localidad}</option>`
+    })
+}
 
 function initalFiltersUpdate(especialidadSelector, provinciaSelector, localidadSelector, aulasList) {
     filters["especialidad"] = especialidadSelector.value;
@@ -175,22 +236,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     const especialidadSelector = document.querySelector('#especialidad-formativa-selector')
     const provinciaSelector = document.querySelector('#provincia-selector')
     const localidadSelector = document.querySelector('#localidad-selector')
-    let aulasMovilesList = []
-
-    aulasMovilesList = await getAulasOverview()
+    const loader = document.querySelector('.loader')
+    const activeNowFlap = document.querySelector("#flap-active")
+    const comingFlap = document.querySelector("#flap-coming")
+    const mapContainer = document.querySelector('.mapContainer')
+    
+    getUserLocation()
+    const aulasList = await getAulasOverview()
 
     function addChangeListener(selector, property) {
-            selector.addEventListener('change', () => {
-                filters[property] = selector.value;
-                if (property === 'provincia' ||  property === 'especialidad') {
-                    filters['localidad'] = ''
-                    localidadSelector.value = ''
-                    updateLocalidades(aulasMovilesList)
-                }
+        selector.addEventListener('change', () => {
+            filters[property] = selector.value;
+            if (property === 'provincia' ||  property === 'especialidad') {
+                filters['localidad'] = ''
+                localidadSelector.value = ''
+                updateLocalidades(aulasList)
+            }
 
-                updateMap(aulasMovilesList);
-            });
-        }
+            updateMap(aulasList);
+        });
+    }
         
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
@@ -198,13 +263,28 @@ document.addEventListener('DOMContentLoaded', async () => {
         id: 'osm-hot'
     }).addTo(map);
 
-    getUserLocation()
+    loader.style.display = 'none'
+    mapContainer.style.display = 'flex'
 
     addChangeListener(especialidadSelector, 'especialidad');
     addChangeListener(provinciaSelector, 'provincia');
     addChangeListener(localidadSelector, 'localidad');
+
+    activeNowFlap.addEventListener('click', () => {
+        activeNowFlap.classList.add('activeFlap')
+        comingFlap.classList.remove('activeFlap')
+        filters.momentoActividad = "ahora"
+        updateMap(aulasList);
+    })
+
+    comingFlap.addEventListener('click', () => {
+        comingFlap.classList.add('activeFlap')
+        activeNowFlap.classList.remove('activeFlap')
+        filters.momentoActividad = "proximamente"
+        updateMap(aulasList);
+    })
     
-    initalFiltersUpdate(especialidadSelector, provinciaSelector, localidadSelector, aulasMovilesList)
+    initalFiltersUpdate(especialidadSelector, provinciaSelector, localidadSelector, aulasList)
 })
 
 </script>

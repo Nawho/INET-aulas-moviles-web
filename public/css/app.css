@@ -38,7 +38,6 @@ a {
 svg,
 video {
     display: block;
-    vertical-align: middle
 }
 
 video {
@@ -387,12 +386,15 @@ video {
 
 
 :root {
-    --blue-inet: #0E68AF;
+    --blue-inet: hsl(206, 85%, 37%);
+    --blue-inet-darker: hsl(206, 85%, 27%);
     --white: #FFFFFF;
     --gray: hsl(0, 0%, 100%);
     --filter-bg: hsl(0, 0%, 58%);
     --header-footer: #1a202c;
     --black: #000000;
+
+    --general-width: 800px;
 }
 
 
@@ -412,10 +414,100 @@ body {
     align-items: center;
 }
 
+.loader {
+    margin-top:20px;
+    text-align: center;
+    font-weight: 500;
+    font-size: 1.5rem;
+}
+
 .full-h {
     height: 75vh;
 }
 
 #botmanWidgetRoot div div div {
     color: white !important;
+}
+
+
+/* FILTERS */
+.filtersSectionContainer {
+    width: var(--general-width);
+    margin-top: 20px;
+    border: 3px solid var(--blue-inet);
+    border-radius: 8px;
+    background-color: #0E68AF;
+}
+
+.filtersContainer {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    padding: 8px;
+    gap: 8px;
+    background-color: #0E68AF;
+}
+
+.filtersTitle {
+    width: 100%;
+    font-size: large;
+    align-self: flex-start;
+    text-align: center;
+    color: black;
+}
+
+.filter {
+    color: white;
+    background-color: #0E68AF;
+    border: 3px solid var(--blue-inet);
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.filter label {
+    pointer-events: none;
+    font-size: small;
+    font-weight: bold;
+    margin-left: 2px;
+}
+
+
+.filter select {
+    width: 100%;
+    border-radius: 8px;
+    color: black;
+    padding: 8px;
+    background-color: white;
+    cursor: pointer;
+    color: black;
+}
+
+/* Ahora, Proximamanete flaps */
+.flap {
+    padding: 10px;
+    padding-top: 5px;
+    border: 3px solid var(--blue-inet);
+    background-color: white;
+    border-radius: 10px;
+    font-weight: 600;
+    z-index: 5;
+    cursor: pointer;
+}
+
+.activeFlap {
+    color: white;
+    background-color: #0e68af;
+}
+
+.bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url(../imgs/icons_blue_plumado.png);
+    background-size: auto;
+    background-size: 300px;
+    z-index: -10;
+    filter: grayscale(1) opacity(0.1);
 }
