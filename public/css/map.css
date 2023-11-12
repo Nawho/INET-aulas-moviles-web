@@ -1,7 +1,7 @@
 .mapContainer {
     display: flex;
     justify-content: center;
-    margin: 20px 0px;
+    margin-top: 20px;
 }
 
 .innerMapContainer {
@@ -95,18 +95,3 @@
 
 
 
-@media screen and (max-width: var(--genetal-width)) {
-    #map {
-        height: 500px;
-        width: 90vw;
-    }
-
-    .filtersSectionContainer {
-        width: 90vw
-    }
-
-    .filtersContainer {
-        flex-direction: column;
-        align-items: center;
-    }
-}

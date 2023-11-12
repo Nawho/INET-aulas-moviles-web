@@ -859,3 +859,11 @@ html.dark .dataTables_wrapper .dataTables_paginate .paginate_button:active {
 .dataTables_scroll {
     overflow-x: hidden !important;
 }
+
+#tableList_wrapper {
+    max-width: none !important;
+}
+
+td {
+    font-size: 0.9rem;
+}

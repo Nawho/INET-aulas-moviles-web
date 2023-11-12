@@ -39,7 +39,8 @@
         }
 
         p {
-            text-align: center
+            white-space: pre-wrap;
+            text-align: left;
         }
 
         .aulaInfoLines {
@@ -82,7 +83,7 @@
             margin-top: 20px;
             border: 3px solid var(--blue-inet);
             border-radius: 8px;
-            padding: 12px;
+            padding: 24px;
             width: 600px;
         }
 
@@ -112,32 +113,7 @@
         .contactLine svg {
             width: 20px !important;
             height: 20px !important;
-        }
-
-
-        @media screen and (max-width: 700px) {
-            #map {
-                height: 300px;
-                width: 90vw;
-            }
-
-            .filtersSectionContainer {
-                width: 90vw
-            }
-
-            .ofertaFormativa {
-                width: 90vw;
-            }
-
-            .filtersContainer {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .contact {
-                width: 90vw;
-            }
-        }
+        } 
     </style>
 </head>
 

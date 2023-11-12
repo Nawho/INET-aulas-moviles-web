@@ -36,7 +36,7 @@
     @include('components.filter')
 
     <div class="centerHorizontally">
-        <div class="tableContainer" style="display: none;">
+        <div class="tableContainer" style="opacity: 0;">
             <div class="listFlapContainer">
                 <div class="flap activeFlap" id="flap-active">Activas ahora</div>
                 <div class="flap" id="flap-coming">Próximamente</div>
@@ -47,8 +47,9 @@
                         <tr>
                             <th>ID</th>
                             <th>Ubicación</th>
-                            <th>Nombre oferta</th>
+                            <th>Oferta formativa</th>
                             <th>Familia profesional</th>
+                            <th>Inicio y fin</th>
                         </tr>
                     </thead>
                 </table>
@@ -60,6 +61,10 @@
         <div class="loader">
             Cargando datos...
         </div>
+    </div>
+
+    <div class="centerHorizontally" style="padding: 20px;">
+           <i>Permítenos el acceso a tu ubiación para poder mostrarte las aulas más cercanas a ti.</i>
     </div>
 
     @include('components.footer')
@@ -92,13 +97,16 @@
                 "data": "n_atm"
             },
             {
-                "data": "ubicaciones.0.ubicacion"
+                "data": "ubicacion_relevante.ubicacion"
             },
             {
                 "data": "nombre"
             },
             {
                 "data": "familia_profesional"
+            },
+            {
+                "data": "ubicacion_relevante.desde_hasta"
             }
         ],
     }
@@ -115,7 +123,6 @@
         if (!res.ok) reject("Error fetching classrooms list.")
 
         const jsonRes = await res.json()
-        console.log(jsonRes)
         resolve(jsonRes)
     })
 
@@ -158,20 +165,32 @@
         }
 
         return {
-            currentLoc: locationWithNearestStartDate,
-            nextLoc: nextLocationWithNearestStartDate
+            currentLoc: JSON.parse(JSON.stringify(locationWithNearestStartDate)),
+            nextLoc: JSON.parse(JSON.stringify(nextLocationWithNearestStartDate)),
         }
     }
 
+    const formatDate = (inputDate) => {
+        const dateArray = inputDate.split("-");
+        const transformedDate = dateArray[2] + "/" + dateArray[1] + "/" + dateArray[0];
+        return transformedDate;
+    }   
+
+    const addRelevantLocations = (aulasList) => {
+        aulasList.forEach((aula) => {
+            const aulaLocation =  filters.momentoActividad === "ahora" ? getRelevantAulaLocations(aula).currentLoc : getRelevantAulaLocations(aula).nextLoc
+            aula["ubicacion_relevante"] = aulaLocation || undefined
+            if (aulaLocation) aulaLocation["ubicacion"] = aulaLocation.localidad + ", " + aulaLocation.provincia
+            if (aulaLocation?.fecha_inicio && aulaLocation?.fecha_fin) aulaLocation.desde_hasta = `${formatDate(aulaLocation.fecha_inicio)} <br/>${formatDate(aulaLocation.fecha_fin)}` 
+        })
+    }
+
     const updateTable = async (aulasList, filters, table) => {
-        const checkbox = document.querySelector("#sort_by_closeness")
-        const currentMonth = new Date().getMonth() + 1
-        const currentYear = new Date().getFullYear()
+        addRelevantLocations(aulasList)
 
         const filteredAulasList = aulasList.filter((aula) => {
-            const aulaLocation =  filters.momentoActividad === "ahora" ? getRelevantAulaLocations(aula).currentLoc : getRelevantAulaLocations(aula).nextLoc
-            if (!aulaLocation) return false
-            aula["ubicacion_relevante"] = aulaLocation
+            const aulaLocation = aula["ubicacion_relevante"] 
+            if (!aulaLocation || aulaLocation === undefined ) return false
 
             return (
                 (filters.momentoActividad === "ahora" ? aula.estado === 1 : true) &&
@@ -184,7 +203,6 @@
             )
         })
 
-
         if (dbInitalized) table.DataTable().destroy()
         table.DataTable({
             ...DATA_TABLE_PRESET,
@@ -192,13 +210,8 @@
         })
         table.DataTable().draw()
         if (!dbInitalized) dbInitalized = true
-    }
 
-    function addUbicacionField(auxaulasList) {
-        const modifiedAulasList = auxaulasList.forEach((aula) => {
-            const ubicacion = aula.ubicaciones[0]
-            if (ubicacion) aula.ubicaciones[0]["ubicacion"] = ubicacion.localidad + ", " + ubicacion.provincia
-        })
+        updateLocalidades(aulasList)
     }
 
     const getUserLocation = () => new Promise(async (resolve, reject) => {
@@ -271,8 +284,6 @@
         const localidades = new Set()
         const localidadSelector = document.querySelector('#localidad-selector')
 
-        console.log(aulasList)
-
         aulasList.forEach(aula => {
             const loc = aula.ubicacion_relevante
             if (!loc) return false
@@ -287,8 +298,6 @@
         localidades.forEach(localidad => {
             localidadSelector.innerHTML += `<option value="${localidad}">${localidad}</option>`
         })
-
-        console.log(localidades)
     }
 
     function capitalizeFirstLetter(str) {
@@ -322,13 +331,26 @@
         const tableContainer = document.querySelector('.tableContainer')
         const activeNowFlap = document.querySelector("#flap-active")
         const comingFlap = document.querySelector("#flap-coming")
-        const checkbox = document.querySelector("#sort_by_closeness")
+        const permissionsInfo = document.querySelector("#permissionsInfo")
         const loader = document.querySelector('.loader')
         const customHeaders = ['id', 'ubicacion', 'especialidad', 'familia profesional'];
         const filteredAulasList = []
 
+        //supress datatable false alerts
+        var originalAlert = window.alert;
+        window.alert = function(message) { 
+            if (!message.includes("DataTables warning")) originalAlert(message)
+        }
+
         const aulasList = await getAulasOverview()
-        addUbicacionField(aulasList)
+        addRelevantLocations(aulasList)
+
+        getUserLocation().then(data => {
+            getDistanceFromArray(userLocation.lat, userLocation.long, aulasList);
+            sortByDistance(aulasList);
+            updateTable(aulasList, filters, table);
+        }).catch(err => {})
+
 
         function createAulaLinks() {
             $('#tableList tbody').on('click', 'tr', function() {
@@ -337,7 +359,7 @@
             });
         }
 
-        tableContainer.style.display = 'block'
+        tableContainer.style.opacity = 1
         loader.style.display = 'none'
 
         function addChangeListener(selector, property) {
@@ -357,21 +379,6 @@
         addChangeListener(especialidadSelector, 'especialidad');
         addChangeListener(provinciaSelector, 'provincia');
         addChangeListener(localidadSelector, 'localidad');
-
-        checkbox.addEventListener('change', () => {
-            if (checkbox.checked) {
-                const loader = document.querySelector('.loader')
-                loader.style.display = 'block'
-                loader.innerText = 'Obteniendo ubicación...'
-
-                getUserLocation().then(data => {
-                    getDistanceFromArray(userLocation.lat, userLocation.long, aulasList);
-                    sortByDistance(aulasList);
-                }).catch(err => {})
-                loader.style.display = 'none'
-                loader.innerText = 'Cargando datos...'
-            }
-        })
 
         activeNowFlap.addEventListener('click', () => {
             activeNowFlap.classList.add('activeFlap')

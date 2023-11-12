@@ -50,6 +50,7 @@ header {
 .navList li a{
     text-decoration: none;
     color: white;
+    font-weight: bold;
 }
 
 .navList li a:hover{

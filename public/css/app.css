@@ -484,6 +484,28 @@ body {
     color: black;
 }
 
+/* replace with --general-width */
+@media (width < 800px) {
+    #map {
+        height: 500px !important;
+        width: 90vw !important;
+    }
+
+    .filtersSectionContainer {
+        width: 90vw !important;
+    }
+
+    .filtersContainer {
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+
+    .tableBody {
+        max-width: 90vw !important;
+        padding: 12px !important;
+    }
+}
+
 /* Ahora, Proximamanete flaps */
 .flap {
     padding: 10px;
