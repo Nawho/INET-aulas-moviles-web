@@ -8,7 +8,7 @@
 
     <title>INET- Aula móvil N°24 </title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel='stylesheet' href="app.css" type="text/css">
+    <link rel='stylesheet' href="aula.css" type="text/css">
    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -63,7 +63,7 @@
         }
 
         .contact {
-            width: 600px;
+            width: var(--general-width);
             padding: 16px;
             margin: 20px 0px;
             display: flex;
@@ -84,12 +84,12 @@
             border: 3px solid var(--blue-inet);
             border-radius: 8px;
             padding: 24px;
-            width: 600px;
+            width: var(--general-width);
         }
 
         #map {
             height: 300px;
-            width: 600px;
+            width: var(--general-width);
 
             border: 3px solid var(--blue-inet);
             border-radius: 8px;
@@ -185,6 +185,31 @@
 </html>
 
 <script>
+    const getRelevantAulaLocations = (aula) => {
+        let locationWithNearestStartDate = null
+
+        for (let i = 0; i < aula.ubicaciones.length; i++) {
+            const ubicacion = aula.ubicaciones[i]
+            const fecha_inicio = new Date(ubicacion.fecha_inicio)
+            const fecha_fin = new Date(ubicacion.fecha_fin)
+            const now = new Date()
+
+            if (fecha_inicio <= now && fecha_fin >= now) {
+                if (locationWithNearestStartDate) {
+                    if (dateDiffWithNowInDays(fecha_inicio) < dateDiffWithNowInDays(locationWithNearestStartDate)) {
+                        locationWithNearestStartDate = ubicacion
+                    }
+                } else {
+                    locationWithNearestStartDate = ubicacion
+                }
+            }
+        }
+
+        return {
+            currentLoc: JSON.parse(JSON.stringify(locationWithNearestStartDate)),
+        }
+    }
+    
     const lat = "{{ isset($datos_aula->ubicaciones[0]->latitud) ? $datos_aula->ubicaciones[0]->latitud : 0 }}";
     const long = "{{ isset($datos_aula->ubicaciones[0]->longitud) ? $datos_aula->ubicaciones[0]->longitud : 0 }}";
     const state = "{{ isset($datos_aula->estado) ? $datos_aula->estado : 0 }}";
@@ -209,7 +234,10 @@
 
     const datosExistentes = "{{ isset($datos_aula->estado) ? 1 : 0 }}"
     if (datosExistentes == 1) {
-        console.log("datos")
+        const aula = {!! json_encode($datos_aula, JSON_PRETTY_PRINT) !!};        
+        const aulaLocations = getRelevantAulaLocations(aula)
+        const long = parseFloat(aulaLocations.currentLoc.longitud)
+        const lat = parseFloat(aulaLocations.currentLoc.latitud)
 
         const map = L.map('map').setView([long, lat], 8);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {

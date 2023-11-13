@@ -30,7 +30,6 @@ export const getAulasOverview = new Promise(async (resolve, reject) => {
     if (!res.ok) reject("Error fetching classrooms list.")
 
     const jsonRes = await res.json()
-    console.log(jsonRes)
     resolve(jsonRes)
 })
 
@@ -40,7 +39,6 @@ export const updateTable = (aulasList, filters, table) => {
         //(item.ubicaciones[0].provincia == provinciaSelector.value || provinciaSelector.value == "")
     })
 
-    console.log(filteredAulasList)
 
     table.DataTable().destroy()
     table.DataTable({

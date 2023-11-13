@@ -151,8 +151,8 @@ const getRelevantAulaLocations = (aula) => {
     }
 
     return {
-        currentLoc: locationWithNearestStartDate,
-        nextLoc: nextLocationWithNearestStartDate
+        currentLoc: JSON.parse(JSON.stringify(locationWithNearestStartDate)),
+        nextLoc: JSON.parse(JSON.stringify(nextLocationWithNearestStartDate)),
     }
 }
 
@@ -185,8 +185,6 @@ function updateMap(aulasList) {
             (aulaLocation.localidad.toLowerCase() == filters.localidad.toLowerCase() || filters.localidad == "")
         )
     })
-
-    console.log(filteredAulasList)
 
     filteredAulasList.forEach((aula) => {
         const loc = aula.ubicacion_relevante

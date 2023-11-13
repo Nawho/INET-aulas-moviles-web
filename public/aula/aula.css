@@ -484,6 +484,18 @@ body {
     color: black;
 }
 
+/* replace with --general-width */
+@media (width < 800px) {
+    #map {
+        height: 500px !important;
+        width: 90vw !important;
+    }
+
+    .ofertaFormativa, .contact {
+        width: 90vw !important;
+    }
+}
+
 /* Ahora, Proximamanete flaps */
 .flap {
     padding: 10px;
