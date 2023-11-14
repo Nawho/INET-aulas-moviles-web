@@ -9,6 +9,9 @@ Fue desarrollada para ser <i> responsive </i> con un criterio <i>mobile-first</i
 
 <br/>
 
+### Demo
+Tenemos una demo del proyecto hosteada online en:  https://aulas-moviles-inet.onrender.com. (Hay que tenerle un poco de paciencia la primera vez que carga)
+
 <details>
   <summary><b>Tecnologías y librerías</b></summary>
 
@@ -35,7 +38,7 @@ Fue desarrollada para ser <i> responsive </i> con un criterio <i>mobile-first</i
 <details>
   <summary><b>Guía de instalación</b></summary>
   
-1\. Asegúrate de tener PHP 8.2 y MySQL instalados en tu sistema.
+1\. Asegúrate de tener **PHP 8.2** y **MySQL** instalados en tu sistema.
 
 2\. Clona el repositorio:
 ```bash
@@ -62,15 +65,18 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-7\. Hostea localmente tu base de datos MYSQL. Encontrarás las tablas y un par de datos de ejemplo en `database/base_db_creator.sql`. 
+7\. Hostea localmente tu base de datos MYSQL. Encontrarás las tablas y un par de datos de ejemplo en `database/example_db_creator.sql`. 
 
 8\. Configura la base de datos en el archivo .env con las credenciales de tu base de datos.
 
-9\. Inicia el servidor de desarrollo de Vite, así como artisan:
+9\. Inicia el servidor de artisan:
 ```bash
 php artisan serve
-npm run dev
 ```
+Nota: En caso de necesitar un rebundle del css y js, hay 2 opciones: <br>
+1. Iniciar el servidor de desarrollo de Vite `npm run dev`
+2. Ejecutar `npm run build` y reemplazar los archivos correspondientes con los recientemnte generados en el proyecto.
+
 
 10\. Visita http://localhost:8000 en tu navegador web para probar la aplicación.
 </details>
