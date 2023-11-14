@@ -48,7 +48,7 @@
     </div>
 
     <div class="centerHorizontally" style="padding: 20px;">
-           <i>Permítenos el acceso a tu ubiación para poder mostrarte las aulas más cercanas a ti.</i>
+           <i>Permítenos el acceso a tu ubicación para poder mostrarte las aulas más cercanas a ti.</i>
     </div>
 
     @include('components.footer')
